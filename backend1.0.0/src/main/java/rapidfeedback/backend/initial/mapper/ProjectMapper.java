@@ -1,17 +1,16 @@
 package rapidfeedback.backend.initial.mapper;
 
-
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
-import rapidfeedback.backend.initial.model.Marker;
+import rapidfeedback.backend.initial.model.Project;
 
 import java.util.List;
 
+
 @Mapper
 @Repository
-public interface MarkerMapper {
-
-    @Select("SELECT * FROM Marker")
-    List<Marker> findAll();
+public interface ProjectMapper {
+    @Select("SELECT * FROM Project")
+    List<Project> findAll();
 }

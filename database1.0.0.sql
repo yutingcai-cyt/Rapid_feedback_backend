@@ -245,9 +245,12 @@ DROP TABLE IF EXISTS `mydb`.`Audio` ;
 
 CREATE TABLE IF NOT EXISTS `mydb`.`Audio` (
   `id` INT NOT NULL AUTO_INCREMENT,
+  `description` CHAR(50), 
+  `bin_data` LONGBLOB, 
+  `filesize` CHAR(50), 
+  `filetype` CHAR(50),
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
-INSERT INTO Audio() values ();
 
 -- -----------------------------------------------------
 -- Table `mydb`.`StudentInProject`

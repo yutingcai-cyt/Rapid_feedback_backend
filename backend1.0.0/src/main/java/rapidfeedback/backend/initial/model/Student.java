@@ -5,12 +5,11 @@ import lombok.Data;
 
 @Builder
 @Data
-
-public class Marker {
+public class Student {
     private Integer id;
-    private String email;
-    private String pwd;
     private String firstName;
     private String middleName;
     private String lastName;
+    private Integer studentNumber;
+    private String email;
 }
