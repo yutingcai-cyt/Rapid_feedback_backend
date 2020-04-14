@@ -1,5 +1,7 @@
 package rapidfeedback.backend.initial.model;
 
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,4 +15,7 @@ public class Marker {
     private String firstName;
     private String middleName;
     private String lastName;
+
+
+
 }
