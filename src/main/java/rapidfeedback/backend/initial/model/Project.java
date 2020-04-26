@@ -3,10 +3,13 @@ package rapidfeedback.backend.initial.model;
 import lombok.Builder;
 import lombok.Data;
 
-@Builder
-@Data
+import java.io.Serializable;
+import java.util.HashMap;
 
-public class Project {
+
+@Data
+public class Project implements Serializable {
+    public Project(){}
     private Integer id;
     private String name;
     private String subjectName;
