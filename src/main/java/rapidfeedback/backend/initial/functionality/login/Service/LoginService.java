@@ -37,11 +37,10 @@ public class LoginService implements LoginServiceInterface {
                 throw new FBException(CommonError.NOT_FOUND.getResultCode(), "password is wrong or username does not exist!");
             }
             log.info("marker id is {}",marker.getId());
-            List<Project> list = loginDao.findProjectsById(marker.getId());
             return LoginResponse.builder()
-                    .list(list)
-                    .firstName(marker.getFirstName())
-                    .token(marker.getEmail())
+                    .last_name(marker.getLast_name())
+                    .id(marker.getId())
+                    .is_coordinator(marker.getIs_coordinator())
                     .build();
         }, executor);
     }

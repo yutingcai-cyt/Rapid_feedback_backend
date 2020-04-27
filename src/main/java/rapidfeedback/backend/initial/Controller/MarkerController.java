@@ -9,6 +9,7 @@ import rapidfeedback.backend.initial.functionality.login.Dao.LoginDao;
 import rapidfeedback.backend.initial.functionality.login.Service.LoginService;
 import rapidfeedback.backend.initial.functionality.login.model.LoginRequest;
 import rapidfeedback.backend.initial.functionality.login.model.LoginResponse;
+import rapidfeedback.backend.initial.functionality.register.Service.RegisterService;
 import rapidfeedback.backend.initial.model.Marker;
 
 import javax.annotation.Resource;
@@ -24,8 +25,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
 @RestController
-@RequestMapping("/v1/Marker")
+@RequestMapping("/v1/markers")
 public class MarkerController {
+
+    @Autowired
+    private RegisterService registerService;
 
     @Autowired
     private LoginDao loginDao;
@@ -40,6 +44,20 @@ public class MarkerController {
     public List<Marker> getAll(){
 
         return loginDao.findAll();
+    }
+
+
+    @PostMapping("/register")
+    public CompletableFuture<ResponseEntity<LoginResponse>> register(HttpServletRequest request, @RequestBody Marker marker){
+        String token = Token.tokenGenerate();
+        request.getSession().setAttribute("token",token);
+
+        return registerService.register(marker)
+                .thenApplyAsync(loginResponse -> {
+                    loginResponse.setToken(token);
+                    log.info("user {} register with token {}", marker.getId(),token);
+                    return ResponseEntity.ok(loginResponse);
+                },executor);
     }
 
     @PostMapping("/login")
