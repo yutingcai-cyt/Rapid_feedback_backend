@@ -7,14 +7,14 @@ import lombok.Data;
 
 @Builder
 @Data
-
 public class Marker {
     private Integer id;
-    private String email;
-    private String pwd;
-    private String firstName;
-    private String middleName;
-    private String lastName;
+    private Integer uni_id;
+    private String uni_email;
+    private String password;
+    private String first_name;
+    private String last_name;
+    private Integer is_coordinator;
 
 
 

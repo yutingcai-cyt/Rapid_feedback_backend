@@ -18,9 +18,12 @@ public class LoginResponse {
 
     private String token;
 
-    private String firstName;
+    private String last_name;
 
-    private List<Project> list;
+    private Integer id;
+
+    private Integer is_coordinator;
+
 
 
     public String toString(){
