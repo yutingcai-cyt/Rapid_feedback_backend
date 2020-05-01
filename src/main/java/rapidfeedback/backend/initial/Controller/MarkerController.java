@@ -5,11 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rapidfeedback.backend.initial.CommonTools.Token.Token;
+import rapidfeedback.backend.initial.functionality.loadProjectList.model.LoadProjectRequest;
+import rapidfeedback.backend.initial.functionality.loadProjectList.model.LoadProjectRespond;
 import rapidfeedback.backend.initial.functionality.login.Dao.LoginDao;
 import rapidfeedback.backend.initial.functionality.login.Service.LoginService;
 import rapidfeedback.backend.initial.functionality.login.model.LoginRequest;
 import rapidfeedback.backend.initial.functionality.login.model.LoginResponse;
 import rapidfeedback.backend.initial.functionality.register.Service.RegisterService;
+import rapidfeedback.backend.initial.functionality.loadProjectList.Service.LoadProjectService;
 import rapidfeedback.backend.initial.model.Marker;
 
 import javax.annotation.Resource;
@@ -36,6 +39,9 @@ public class MarkerController {
 
     @Autowired
     private LoginService loginService;
+
+    @Autowired
+    private LoadProjectService loadProjectService;
 
     @Resource(name = "controllerThreadPool")
     private ThreadPoolExecutor executor;
@@ -72,4 +78,16 @@ public class MarkerController {
                 },executor);
     }
 
+    @PostMapping("/project")
+    public CompletableFuture<ResponseEntity<LoadProjectRespond>> loadProjectList(HttpServletRequest request, @RequestBody LoadProjectRequest loadProjectRequest){
+        String token = request.getHeader("Authorization");
+        return loadProjectService.loadProject(loadProjectRequest.getId())
+                .thenApplyAsync(loadProjectRespond -> {
+                    if (Token.tokenCheck(request, token)) {
+                        log.info("user {}'s projects list", loadProjectRequest.getId());
+                        return ResponseEntity.ok(loadProjectRespond);
+                    }
+                    return null;
+                },executor);
+    }
 }
