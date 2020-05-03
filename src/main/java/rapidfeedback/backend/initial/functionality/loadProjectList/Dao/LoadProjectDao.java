@@ -12,7 +12,7 @@ import java.util.List;
 public interface LoadProjectDao {
 
     @Select("SELECT * from project " +
-            "LEFT JOIN marker_in_proj ON marker_in_proj.proj_id = Project.id " +
+            "LEFT JOIN marker_in_proj ON marker_in_proj.proj_id = project.id " +
             "WHERE marker_id = #{id}")
     List<Project> findProjectsById(@Param(value = "id") Integer id);
 

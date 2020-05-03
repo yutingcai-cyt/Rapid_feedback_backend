@@ -19,6 +19,7 @@ import rapidfeedback.backend.initial.model.Project;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -83,13 +84,13 @@ public class MarkerController {
                 },executor);
     }
 
-    @GetMapping("/project")
-    public CompletableFuture<ResponseEntity<LoadProjectRespond>> loadProjectList(HttpServletRequest request, @RequestParam Integer markerId){
+    @GetMapping("/projects/{id}")
+    public CompletableFuture<ResponseEntity<LoadProjectRespond>> loadProjectList(HttpServletRequest request, @PathVariable("id") Integer id){
         String token = request.getHeader("Authorization");
-        return loadProjectService.loadProject(markerId)
+        return loadProjectService.loadProject(id)
                 .thenApplyAsync(loadProjectRespond -> {
                     Token.tokenCheck(request, token);
-                    log.info("user {}'s projects list", markerId);
+                    log.info("user {}'s projects list", id);
                     return ResponseEntity.ok(loadProjectRespond);
                 },executor);
     }
