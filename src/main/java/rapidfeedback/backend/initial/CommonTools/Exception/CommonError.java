@@ -3,7 +3,7 @@ package rapidfeedback.backend.initial.CommonTools.Exception;
 
 public enum CommonError implements ErrorInfoInterface {
     SUCCESS("200", "success!"),
-    UNAUTHORIZED("401","unauthrized"),
+    UNAUTHORIZED("401","unauthorized"),
     BAD_REQUEST("400", "bad request!"),
     NOT_FOUND("404","can't find resources"),
     INTERNAL_SERVER_ERROR("500","server internal error!"),

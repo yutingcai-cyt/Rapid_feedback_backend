@@ -28,7 +28,7 @@ public class Token {
      * check the identity of user with token
      * @param request
      * @param token
-     * @return
+     * @return boolean
      */
     public static boolean tokenCheck(HttpServletRequest request, String token){
         String savedToken = (String) request.getSession().getAttribute("token");
@@ -41,5 +41,4 @@ public class Token {
             return true;
         }
     }
-
 }
