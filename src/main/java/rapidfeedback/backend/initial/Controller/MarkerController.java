@@ -83,13 +83,13 @@ public class MarkerController {
                 },executor);
     }
 
-    @GetMapping("/{id}/project")
-    public CompletableFuture<ResponseEntity<LoadProjectRespond>> loadProjectList(HttpServletRequest request, @PathVariable("id") Integer id){
+    @GetMapping("/project")
+    public CompletableFuture<ResponseEntity<LoadProjectRespond>> loadProjectList(HttpServletRequest request, @RequestParam Integer markerId){
         String token = request.getHeader("Authorization");
-        return loadProjectService.loadProject(id)
+        return loadProjectService.loadProject(markerId)
                 .thenApplyAsync(loadProjectRespond -> {
                     Token.tokenCheck(request, token);
-                    log.info("user {}'s projects list", id);
+                    log.info("user {}'s projects list", markerId);
                     return ResponseEntity.ok(loadProjectRespond);
                 },executor);
     }
