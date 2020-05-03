@@ -12,7 +12,7 @@ import java.util.UUID;
  * @author cyt
  * @date 2020/4/15
  */
-public class  Token {
+public class Token {
     /**
      * generate token for login
      * @return String

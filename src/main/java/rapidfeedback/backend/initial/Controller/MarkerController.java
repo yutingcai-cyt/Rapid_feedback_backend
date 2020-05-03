@@ -5,7 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rapidfeedback.backend.initial.CommonTools.Token.Token;
-import rapidfeedback.backend.initial.functionality.loadProjectList.model.LoadProjectRequest;
+import rapidfeedback.backend.initial.functionality.createProject.model.CreateProjResponse;
+import rapidfeedback.backend.initial.functionality.createProject.service.CreateProjectService;
 import rapidfeedback.backend.initial.functionality.loadProjectList.model.LoadProjectRespond;
 import rapidfeedback.backend.initial.functionality.login.Dao.LoginDao;
 import rapidfeedback.backend.initial.functionality.login.Service.LoginService;
@@ -14,6 +15,7 @@ import rapidfeedback.backend.initial.functionality.login.model.LoginResponse;
 import rapidfeedback.backend.initial.functionality.register.Service.RegisterService;
 import rapidfeedback.backend.initial.functionality.loadProjectList.Service.LoadProjectService;
 import rapidfeedback.backend.initial.model.Marker;
+import rapidfeedback.backend.initial.model.Project;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +44,9 @@ public class MarkerController {
 
     @Autowired
     private LoadProjectService loadProjectService;
+
+    @Autowired
+    private CreateProjectService createProjectService;
 
     @Resource(name = "controllerThreadPool")
     private ThreadPoolExecutor executor;
@@ -78,16 +83,25 @@ public class MarkerController {
                 },executor);
     }
 
-    @PostMapping("/project")
-    public CompletableFuture<ResponseEntity<LoadProjectRespond>> loadProjectList(HttpServletRequest request, @RequestBody LoadProjectRequest loadProjectRequest){
+    @GetMapping("/{id}/project")
+    public CompletableFuture<ResponseEntity<LoadProjectRespond>> loadProjectList(HttpServletRequest request, @PathVariable("id") Integer id){
         String token = request.getHeader("Authorization");
-        return loadProjectService.loadProject(loadProjectRequest.getId())
+        return loadProjectService.loadProject(id)
                 .thenApplyAsync(loadProjectRespond -> {
-                    if (Token.tokenCheck(request, token)) {
-                        log.info("user {}'s projects list", loadProjectRequest.getId());
-                        return ResponseEntity.ok(loadProjectRespond);
-                    }
-                    return null;
+                    Token.tokenCheck(request, token);
+                    log.info("user {}'s projects list", id);
+                    return ResponseEntity.ok(loadProjectRespond);
+                },executor);
+    }
+
+    @PostMapping("/create")
+    public CompletableFuture<ResponseEntity<CreateProjResponse>> createProject(HttpServletRequest request, @RequestBody Project project){
+        String token = request.getHeader("Authorization");
+        return createProjectService.createProject(project)
+                .thenApplyAsync(createProjResponse -> {
+                    Token.tokenCheck(request, token);
+                    log.info("project {} created", project.getId());
+                    return ResponseEntity.ok(createProjResponse);
                 },executor);
     }
 }
