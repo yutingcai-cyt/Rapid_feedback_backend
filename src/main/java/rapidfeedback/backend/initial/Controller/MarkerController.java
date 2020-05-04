@@ -2,6 +2,7 @@ package rapidfeedback.backend.initial.Controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rapidfeedback.backend.initial.CommonTools.Token.Token;
@@ -51,12 +52,17 @@ public class MarkerController {
     public CompletableFuture<ResponseEntity<LoginResponse>> register(HttpServletRequest request, @RequestBody Marker marker){
         String token = Token.tokenGenerate();
         request.getSession().setAttribute("token",token);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccessControlAllowOrigin("*");
 
         return registerService.register(marker)
                 .thenApplyAsync(loginResponse -> {
                     loginResponse.setToken(token);
                     log.info("user {} register with token {}", marker.getId(),token);
-                    return ResponseEntity.ok(loginResponse);
+                    return ResponseEntity
+                            .ok()
+                            .headers(httpHeaders)
+                            .body(loginResponse);
                 },executor);
     }
 
@@ -64,11 +70,16 @@ public class MarkerController {
     public CompletableFuture<ResponseEntity<LoginResponse>> login(HttpServletRequest request, @RequestBody LoginRequest loginRequest){
         String token = Token.tokenGenerate();
         request.getSession().setAttribute("token",token);
+        request.getSession().setAttribute("token",token);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccessControlAllowOrigin("*");
         return loginService.login(loginRequest.getUsername(), loginRequest.getPassword())
                 .thenApplyAsync(loginResponse -> {
                     loginResponse.setToken(token);
                     log.info("user {} login with token {}", loginRequest.getUsername(),token);
-                    return ResponseEntity.ok(loginResponse);
+                    return ResponseEntity.ok()
+                            .headers(httpHeaders)
+                            .body(loginResponse);
                 },executor);
     }
 

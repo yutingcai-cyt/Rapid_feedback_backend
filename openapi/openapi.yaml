@@ -1,0 +1,535 @@
+
+
+openapi: 3.0.0
+info:
+  title: "rapid feedback"
+  description: "this is api for project of rapid feedback"
+  version: "1.0.0"
+
+tags:
+  - name: "student"
+  - name: "criteria"
+  - name: "project"
+  - name: "marker"
+  - name: "result"
+  - name: "group"
+
+paths:
+  /v1/markers/login:
+    post:
+      tags:
+        - marker
+      description: "the user login function"
+      operationId: "login"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInformation'
+      responses:
+        '200':
+          description: Login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+        '401':
+          description: failed
+          content:
+            applicaiton/json:
+              schema:
+                $ref: '#/components/schemas/ErrorInformation'
+
+
+  /v1/markers/register:
+    post:
+      tags:
+        - marker
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Marker'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+
+
+
+
+
+  /v1/projects:
+    post:
+      tags:
+        - project
+      operationId: createProject
+      description:
+        'add a new project'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        201:
+          description: Created
+          content:
+            plain/text:
+              schema:
+                type: string
+                description: 'projectId'
+
+
+  /v1/projects/{id}:
+    get:
+      tags:
+        - project
+      operationId: getProjectList
+      description:  "get all project acoording to the markerId"
+      parameters:
+        - in: path
+          name: id
+          description: "markerId which is used to search projects"
+          schema:
+            type: integer
+
+          required: true
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/Project'
+                    - type: object
+                      properties:
+                        id:
+                          type: integer
+
+
+
+
+
+
+
+    put:
+      tags:
+        - project
+
+      operationId: updateProject
+      description:
+        'update project information'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        content:
+          applcation/json:
+            schema:
+              $ref: '#/components/schemas/updateProjectRequest'
+      responses:
+        200:
+          description: OK
+
+
+
+
+
+
+  /v1/groups:
+    put:
+      tags:
+        - group
+      operationId: addGroup
+      description: "add students into a a group of a project"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupInfo'
+      responses:
+        201:
+          description: "OK"
+  /v1/groups/{projectId}/{groupId}:
+    delete:
+      tags:
+        - group
+      operationId: deleteGroup
+      description: "delete a group information from a project"
+      parameters:
+        - in: path
+          name: projectId
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: groupId
+          schema:
+            type: integer
+          required: true
+      responses:
+        204:
+          description: "deleted"
+
+
+  /criterian/add:
+    post:
+      tags:
+        - criteria
+      operationId: addCriterian
+      description:
+        'add assess criterian to one peoject'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCriterianRequest'
+      responses:
+        201:
+          description: Added
+  /v1/students:
+    post:
+      tags:
+        - student
+      operationId: addStudentIntoProject
+      description: "add a student into project"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Student'
+                - type: object
+                  properties:
+                    project_id:
+                      type: integer
+      responses:
+        201:
+          description: "added"
+
+  /v1/students/{studentId}/{projectId}:
+    delete:
+      tags:
+        - student
+      operationId: deleteStudentFromProject
+      description: "delete a student from a project"
+      parameters:
+        - in: path
+          name: studentId
+          schema:
+            type: integer
+          required: true
+        - in : path
+          name: projectId
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: "deleted"
+
+
+
+
+
+
+  /results:
+    post:
+      tags:
+        - result
+      operationId: addResult
+      description: 'add result into the database'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddResultRequest'
+      responses:
+        201:
+          description: Created
+  /results/final:
+    post:
+      tags:
+        - result
+      operationId: finalResult
+      description: 'add the final result into the database'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddFinalResultRequest'
+      responses:
+        200:
+          description: OK
+
+  /results/email:
+    post:
+      tags:
+        - result
+      operationId: sendEmail
+      description: 'send a email to stuednt'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailRequest'
+      responses:
+        200:
+          description: OK
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+components:
+
+  schemas:
+    LoginInformation:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    LoginResponse:
+      type: object
+      properties:
+        is_coordinator:
+          type: integer
+          description: "0 -> false, 1 -> true"
+        last_name:
+          type: string
+
+        token:
+          type: string
+        id:
+          type: integer
+          description: "id of the marker"
+
+    Project:
+      type: object
+      description: 'details we can get from the database table attributes'
+      properties:
+        subject_code:
+          type: string
+        subject_name:
+          type: string
+        proj_name:
+          type: string
+        duration_min:
+          type: integer
+        duration_sec:
+          type: integer
+        is_group:
+          type: integer
+          description: "0 -> individual project; 1 -> group project "
+        proj_description:
+          type: string
+
+    ErrorInformation:
+      type: string
+
+    Marker:
+      type: object
+      description: 'details we can get from the database table attributes'
+      properties:
+        uni_id:
+          type: integer
+        uni_email:
+          type: string
+        password:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        is_coordinator:
+          type: integer
+          description: "0 -> false, 1 -> true"
+
+    AddStudentRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        project:
+          type: string
+        students:
+          type: array
+          items:
+            $ref: '#/components/schemas/Student'
+
+    Student:
+      type: object
+      description: 'details we can get from the database table attributes'
+      properties:
+        uni_student_number:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        uni_email:
+          type: string
+
+
+    Criteria:
+      type: object
+      description: 'details we can get from the database table attributes'
+
+    AddCriterianRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        project:
+          $ref: '#/components/schemas/Project'
+        criterian:
+          type: array
+          items:
+            $ref: '#/components/schemas/Criteria'
+
+    DeleteStudentRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        project:
+          type: string
+        student:
+          type: string
+
+    updateStudentRequest:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Student'
+        - type: object
+          properties:
+            token:
+              type: string
+            projectId:
+              type: string
+            groupId:
+              type: string
+
+
+    GroupStudentRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        projectId:
+          type: string
+        studentId:
+          type: string
+        groupId:
+          type: string
+    MarkerInProject:
+      type: object
+      properties:
+        token:
+          type: string
+        projectId:
+          type: string
+        markerId:
+          type: string
+
+    AddResultRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        projectId:
+          type: string
+        studentId:
+          type: string
+        remark:
+          type: object
+    AddFinalResultRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        projectId:
+          type: string
+        studentId:
+          type: string
+        remark:
+          type: object
+        score:
+          type: integer
+    SendEmailRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        projectId:
+          type: string
+        studentId:
+          type: string
+        sendBoth:
+          type: integer
+          description: 'if 1, send only to the student; if 2, send both to the student and assessor'
+
+    CreateProjectRequest:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Project'
+        - type: object
+          properties:
+            token:
+              type: string
+    updateProjectRequest:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Project'
+        - type: object
+          properties:
+            token:
+              type: string
+    GroupInfo:
+      type: object
+      properties:
+        project_id:
+          type: integer
+        group_id:
+          type: integer
+        studentList:
+          type: array
+          items:
+            type: object
+            properties:
+              student_number:
+                type: integer
+
+
+
+

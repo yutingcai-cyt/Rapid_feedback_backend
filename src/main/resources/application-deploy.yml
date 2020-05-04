@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/rapid_feedback?serverTimezone=UTC
+    url: jdbc:mysql://mysql-server:3306/rapid_feedback?serverTimezone=UTC
     username: root
     password: 123
     dbcp2:
