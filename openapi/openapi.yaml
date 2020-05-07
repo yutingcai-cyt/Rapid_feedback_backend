@@ -1,3 +1,5 @@
+
+
 openapi: 3.0.0
 info:
   title: "rapid feedback"
@@ -375,7 +377,8 @@ components:
           description: "0 -> false, 1 -> true"
         last_name:
           type: string
-
+        first_name:
+          type: string
         token:
           type: string
         id:
