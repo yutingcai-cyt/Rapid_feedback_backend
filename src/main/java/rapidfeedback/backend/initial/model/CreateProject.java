@@ -1,15 +1,15 @@
-package rapidfeedback.backend.initial.functionality.createProject.model;
+package rapidfeedback.backend.initial.model;
 
 
-import com.alibaba.fastjson.JSONObject;
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.Tolerate;
 
-@Data
 @Builder
-public class CreateProjResponse {
+@Data
+public class CreateProject {
 
-    private Integer id;
+
     private String subject_code;
     private String subject_name;
     private String proj_name;
@@ -18,10 +18,8 @@ public class CreateProjResponse {
     private Integer is_group;
     private String proj_description;
 
+    private Integer marker_id;
 
-
-    public String toString(){
-        return JSONObject.toJSONString(this);
-    }
+    @Tolerate
+    CreateProject() {}
 }
-

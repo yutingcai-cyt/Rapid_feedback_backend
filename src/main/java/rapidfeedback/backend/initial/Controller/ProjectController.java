@@ -7,13 +7,18 @@ import org.springframework.web.bind.annotation.*;
 import rapidfeedback.backend.initial.CommonTools.Token.Token;
 import rapidfeedback.backend.initial.functionality.createProject.model.CreateProjResponse;
 import rapidfeedback.backend.initial.functionality.createProject.service.CreateProjectService;
+import rapidfeedback.backend.initial.functionality.deleteProject.service.DeleteProjService;
 import rapidfeedback.backend.initial.functionality.loadProjectList.Dao.LoadProjectDao;
 import rapidfeedback.backend.initial.functionality.loadProjectList.model.LoadProjectRespond;
 import rapidfeedback.backend.initial.functionality.loadProjectList.Service.LoadProjectService;
+import rapidfeedback.backend.initial.functionality.updateProject.service.UpdateProjService;
+import rapidfeedback.backend.initial.model.CreateProject;
 import rapidfeedback.backend.initial.model.Project;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.Result;
+import javax.xml.ws.Response;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -37,6 +42,12 @@ public class ProjectController {
     @Autowired
     private CreateProjectService createProjectService;
 
+    @Autowired
+    private UpdateProjService updateProjService;
+
+    @Autowired
+    private DeleteProjService deleteProjService;
+
     @Resource(name = "controllerThreadPool")
     private ThreadPoolExecutor executor;
 
@@ -48,23 +59,38 @@ public class ProjectController {
 
     @GetMapping("/{id}")
     public CompletableFuture<ResponseEntity<LoadProjectRespond>> loadProjectList(HttpServletRequest request, @PathVariable("id") Integer id){
+        log.info("sessionId : {}", request.getSession().getId());
         String token = request.getHeader("Authorization");
+        Token.tokenCheck(request, token);
         return loadProjectService.loadProject(id)
                 .thenApplyAsync(loadProjectRespond -> {
-                    Token.tokenCheck(request, token);
                     log.info("user {}'s projects list", id);
                     return ResponseEntity.ok(loadProjectRespond);
                 },executor);
     }
 
-    @PostMapping("/create")
-    public CompletableFuture<ResponseEntity<CreateProjResponse>> createProject(HttpServletRequest request, @RequestBody Project project){
+    @PostMapping("/create/{id}")
+    public CompletableFuture<ResponseEntity<CreateProjResponse>> createProject(HttpServletRequest request, @RequestBody Project project, @PathVariable("id") Integer markerId) {
         String token = request.getHeader("Authorization");
-        return createProjectService.createProject(project)
+        Token.tokenCheck(request, token);
+        return createProjectService.createProject(markerId, project)
                 .thenApplyAsync(createProjResponse -> {
-                    Token.tokenCheck(request, token);
-                    log.info("project {} created", project.getId());
+                    log.info("user {} create project", markerId);
                     return ResponseEntity.ok(createProjResponse);
-                },executor);
+                }, executor);
+    }
+
+    @PutMapping("/update/{id}")
+    public void updateProject(HttpServletRequest request, @RequestBody Project project, @PathVariable("id") Integer projectId){
+        String token = request.getHeader("Authorization");
+        Token.tokenCheck(request, token);
+        updateProjService.updateProject(project, projectId);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteProject(HttpServletRequest request, @PathVariable("id") Integer projectId){
+        String token = request.getHeader("Authorization");
+        Token.tokenCheck(request, token);
+        deleteProjService.deleteProject(projectId);
     }
 }
