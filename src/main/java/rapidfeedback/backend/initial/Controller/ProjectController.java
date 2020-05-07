@@ -69,7 +69,7 @@ public class ProjectController {
                 },executor);
     }
 
-    @PostMapping("/create/{id}")
+    @PostMapping("/{id}")
     public CompletableFuture<ResponseEntity<CreateProjResponse>> createProject(HttpServletRequest request, @RequestBody Project project, @PathVariable("id") Integer markerId) {
         String token = request.getHeader("Authorization");
         Token.tokenCheck(request, token);
@@ -80,14 +80,18 @@ public class ProjectController {
                 }, executor);
     }
 
-    @PutMapping("/update/{id}")
-    public void updateProject(HttpServletRequest request, @RequestBody Project project, @PathVariable("id") Integer projectId){
+    @PutMapping("/{id}")
+    public CompletableFuture<ResponseEntity<CreateProjResponse>> updateProject(HttpServletRequest request, @RequestBody Project project, @PathVariable("id") Integer projectId){
         String token = request.getHeader("Authorization");
         Token.tokenCheck(request, token);
-        updateProjService.updateProject(project, projectId);
+        return updateProjService.updateProject(project, projectId)
+                .thenApplyAsync(createProjResponse -> {
+                    log.info("user {} update project", projectId);
+                    return ResponseEntity.ok(createProjResponse);
+                }, executor);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteProject(HttpServletRequest request, @PathVariable("id") Integer projectId){
         String token = request.getHeader("Authorization");
         Token.tokenCheck(request, token);
