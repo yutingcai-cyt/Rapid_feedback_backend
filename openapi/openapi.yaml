@@ -1,5 +1,3 @@
-
-
 openapi: 3.0.0
 info:
   title: "rapid feedback"
@@ -83,10 +81,14 @@ paths:
         201:
           description: Created
           content:
-            plain/text:
+            application/json:
               schema:
-                type: string
-                description: 'projectId'
+                allOf:
+                  - $ref: '#/components/schemas/Project'
+                  - type: object
+                    properties:
+                      id:
+                        type: integer
 
 
   /v1/projects/{id}:
@@ -141,7 +143,13 @@ paths:
         content:
           applcation/json:
             schema:
-              $ref: '#/components/schemas/updateProjectRequest'
+              allOf:
+                - $ref: '#/components/schemas/Project'
+                - type: object
+                  properties:
+                    id:
+                      type: integer
+
       responses:
         200:
           description: OK
@@ -152,7 +160,7 @@ paths:
 
 
   /v1/groups:
-    put:
+    post:
       tags:
         - group
       operationId: addGroup
@@ -221,6 +229,46 @@ paths:
       responses:
         201:
           description: "added"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Student'
+                  - type: object
+                    properties:
+                      student_id:
+                        type: integer
+                        description: "id of the student"
+                      project_id:
+                        type: integer
+                        description: "id of the project"
+
+  /v1/students/{projectId}:
+    get:
+      tags:
+        - student
+      operationId: getStudents
+      description: "get students belong to a single project"
+      parameters:
+        - in: path
+          name: projectId
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: "ok"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: "#/components/schemas/Student"
+                    - type: object
+                      properties:
+                        id:
+                          type: integer
 
   /v1/students/{studentId}/{projectId}:
     delete:
@@ -527,7 +575,7 @@ components:
           items:
             type: object
             properties:
-              student_number:
+              student_id:
                 type: integer
 
 

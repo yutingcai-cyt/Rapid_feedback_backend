@@ -52,17 +52,14 @@ public class MarkerController {
     public CompletableFuture<ResponseEntity<LoginResponse>> register(HttpServletRequest request, @RequestBody Marker marker){
         String token = Token.tokenGenerate();
         request.getSession().setAttribute("token",token);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setAccessControlAllowOrigin("*");
+
 
         return registerService.register(marker)
                 .thenApplyAsync(loginResponse -> {
                     loginResponse.setToken(token);
                     log.info("user {} register with token {}", marker.getId(),token);
                     return ResponseEntity
-                            .ok()
-                            .headers(httpHeaders)
-                            .body(loginResponse);
+                            .ok(loginResponse);
                 },executor);
     }
 
@@ -70,16 +67,13 @@ public class MarkerController {
     public CompletableFuture<ResponseEntity<LoginResponse>> login(HttpServletRequest request, @RequestBody LoginRequest loginRequest){
         String token = Token.tokenGenerate();
         request.getSession().setAttribute("token",token);
-        request.getSession().setAttribute("token",token);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setAccessControlAllowOrigin("*");
+
+        log.info("sessionid : {}", request.getSession().getId());
         return loginService.login(loginRequest.getUsername(), loginRequest.getPassword())
                 .thenApplyAsync(loginResponse -> {
                     loginResponse.setToken(token);
                     log.info("user {} login with token {}", loginRequest.getUsername(),token);
-                    return ResponseEntity.ok()
-                            .headers(httpHeaders)
-                            .body(loginResponse);
+                    return ResponseEntity.ok(loginResponse);
                 },executor);
     }
 

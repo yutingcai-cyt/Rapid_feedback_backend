@@ -3,6 +3,7 @@ package rapidfeedback.backend.initial.Controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import rapidfeedback.backend.initial.CommonTools.Token.Token;
 import rapidfeedback.backend.initial.functionality.group.Service.GroupService;
@@ -30,6 +31,7 @@ public class GroupController {
     @Resource(name = "controllerThreadPool")
     private ThreadPoolExecutor executor;
 
+    @Transactional
     @PostMapping()
     public CompletableFuture<ResponseEntity<Void>> createSingleGroup(HttpServletRequest request, @RequestBody CreateGroupRequest createGroupRequest){
 
@@ -39,7 +41,7 @@ public class GroupController {
         .thenApplyAsync(aVoid -> {
             log.info("create group {} in project {}", createGroupRequest.getProject_id(),createGroupRequest.getProject_id());
             return ResponseEntity.ok(aVoid);
-        });
+        },executor);
     }
 
     @DeleteMapping("/{projectId}/{groupId}")
@@ -49,6 +51,6 @@ public class GroupController {
         return groupService.deleteGroup(projectId,group).thenApplyAsync(aVoid -> {
             log.info("delete group {}",group);
             return ResponseEntity.ok(aVoid);
-        });
+        },executor);
     }
 }

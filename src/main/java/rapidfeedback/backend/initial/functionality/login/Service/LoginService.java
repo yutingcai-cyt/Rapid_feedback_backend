@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rapidfeedback.backend.initial.CommonTools.Exception.CommonError;
 import rapidfeedback.backend.initial.CommonTools.Exception.FBException;
+import rapidfeedback.backend.initial.CommonTools.JsonTool.JsonTransfer;
 import rapidfeedback.backend.initial.functionality.login.Dao.LoginDao;
 import rapidfeedback.backend.initial.functionality.login.model.LoginResponse;
 import rapidfeedback.backend.initial.model.Marker;
@@ -37,11 +38,7 @@ public class LoginService implements LoginServiceInterface {
                 throw new FBException(CommonError.NOT_FOUND.getResultCode(), "password is wrong or username does not exist!");
             }
             log.info("marker id is {}",marker.getId());
-            return LoginResponse.builder()
-                    .last_name(marker.getLast_name())
-                    .id(marker.getId())
-                    .is_coordinator(marker.getIs_coordinator())
-                    .build();
+            return JsonTransfer.transfer(marker, new LoginResponse());
         }, executor);
     }
 }

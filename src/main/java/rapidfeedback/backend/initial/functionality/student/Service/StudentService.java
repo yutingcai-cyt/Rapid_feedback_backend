@@ -4,6 +4,7 @@ import rapidfeedback.backend.initial.functionality.student.model.AddStudentReque
 import rapidfeedback.backend.initial.functionality.student.model.AddStudentResponse;
 import rapidfeedback.backend.initial.model.Student;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -28,4 +29,11 @@ public interface StudentService {
      */
     CompletableFuture<Void> deleteStudentFromProject(Integer studentId, Integer projectId);
 
+
+    /**
+     * get all students who are in a single project
+     * @param projectId
+     * @return List<Student>
+     */
+    CompletableFuture<List<Student>> getStudentdsInProject(Integer projectId);
 }

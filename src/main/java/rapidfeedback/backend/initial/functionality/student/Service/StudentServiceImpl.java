@@ -3,11 +3,13 @@ package rapidfeedback.backend.initial.functionality.student.Service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import rapidfeedback.backend.initial.CommonTools.JsonTool.JsonTransfer;
 import rapidfeedback.backend.initial.functionality.student.Dao.StudentDao;
 import rapidfeedback.backend.initial.functionality.student.model.AddStudentResponse;
 import rapidfeedback.backend.initial.model.Student;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -41,15 +43,10 @@ public class StudentServiceImpl implements  StudentService{
            }
             log.info("studentInfo: {}",student);
            studentDao.addStudentIntoProject(student.getId(),projectId);
-           return AddStudentResponse.builder()
-                            .first_name(student.getFirst_name())
-                            .last_name(student.getLast_name())
-                            .student_id(student.getId())
-                            .uni_email(student.getUni_email())
-                            .uni_student_number(student.getUni_student_number())
-                            .project_id(projectId)
-                            .build();
-
+           AddStudentResponse response = JsonTransfer.transfer(student,new AddStudentResponse());
+           response.setProject_id(projectId);
+           response.setStudent_id(student.getId());
+           return response;
         },executor);
     }
 
@@ -58,5 +55,10 @@ public class StudentServiceImpl implements  StudentService{
     @Override
     public CompletableFuture<Void> deleteStudentFromProject(Integer studentId, Integer projectId) {
         return CompletableFuture.runAsync(() -> studentDao.deleteStudent(studentId,projectId),executor);
+    }
+
+    @Override
+    public CompletableFuture<List<Student>> getStudentdsInProject(Integer projectId) {
+        return CompletableFuture.supplyAsync(() -> studentDao.getStudentsByProjectId(projectId));
     }
 }

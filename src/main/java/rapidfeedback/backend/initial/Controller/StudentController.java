@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
+import rapidfeedback.backend.initial.CommonTools.JsonTool.JsonTransfer;
 import rapidfeedback.backend.initial.CommonTools.Token.Token;
 import rapidfeedback.backend.initial.functionality.student.Service.StudentService;
 import rapidfeedback.backend.initial.functionality.student.model.AddStudentRequest;
@@ -14,6 +15,7 @@ import rapidfeedback.backend.initial.model.Student;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -37,13 +39,8 @@ public class StudentController {
     public CompletableFuture<ResponseEntity<AddStudentResponse>> addStudentIntoProejct(HttpServletRequest request, @RequestBody AddStudentRequest addStudentRequest) {
         String token = request.getHeader("Authorization");
         Token.tokenCheck(request,token);
-        Student student = new Student();
-        student.setFirst_name(addStudentRequest.getFirst_name());
-        student.setLast_name(addStudentRequest.getLast_name());
-        student.setUni_email(addStudentRequest.getUni_email());
-        student.setUni_student_number(addStudentRequest.getUni_student_number());
-
-
+        Student student = JsonTransfer.transfer(addStudentRequest,new Student());
+        log.info("studentInfo {}",student);
         return studentService.addStudent(student,addStudentRequest.getProject_id())
                 .thenApplyAsync(addStudentResponse -> {
                     log.info("add student {} into project {}", addStudentResponse.getStudent_id(),addStudentResponse.getProject_id());
@@ -59,5 +56,15 @@ public class StudentController {
             log.info("delete student {} from project {}", studentId,projectId );
             return ResponseEntity.ok(aVoid);
         },executor);
+    }
+
+    @GetMapping("/{projectId}")
+    public CompletableFuture<ResponseEntity<List<Student>>> getStudentsInProject(HttpServletRequest request, @PathVariable(name = "projectId") Integer projectId){
+        String token = request.getHeader("Authorization");
+        Token.tokenCheck(request,token);
+        return studentService.getStudentdsInProject(projectId).thenApplyAsync(list -> {
+            log.info("get all students {} from the project with id {}",list,projectId);
+            return ResponseEntity.ok(list);
+        });
     }
 }

@@ -8,19 +8,18 @@ import lombok.Data;
  * @date 2020/5/4
  */
 @Data
-@Builder
 public class AddStudentResponse {
+    public AddStudentResponse(){};
+    Integer uni_student_number;
 
-    private Integer uni_student_number;
+    String first_name;
 
-    private String first_name;
+    String last_name;
 
-    private String last_name;
+    String uni_email;
 
-    private String uni_email;
+    Integer project_id;
 
-    private Integer project_id;
-
-    private Integer student_id;
+    Integer student_id;
 
 }
