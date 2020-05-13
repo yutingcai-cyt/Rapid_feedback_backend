@@ -10,5 +10,11 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface LoginServiceInterface {
 
+    /**
+     * login function
+     * @param username
+     * @param password
+     * @return loginResponse
+     */
     CompletableFuture<LoginResponse> login(String username, String password);
 }

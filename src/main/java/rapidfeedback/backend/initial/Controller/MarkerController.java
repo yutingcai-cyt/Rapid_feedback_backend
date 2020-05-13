@@ -2,6 +2,7 @@ package rapidfeedback.backend.initial.Controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rapidfeedback.backend.initial.CommonTools.Token.Token;
@@ -63,11 +64,13 @@ public class MarkerController {
         String token = Token.tokenGenerate();
         request.getSession().setAttribute("token",token);
 
+
         return registerService.register(marker)
                 .thenApplyAsync(loginResponse -> {
                     loginResponse.setToken(token);
                     log.info("user {} register with token {}", marker.getId(),token);
-                    return ResponseEntity.ok(loginResponse);
+                    return ResponseEntity
+                            .ok(loginResponse);
                 },executor);
     }
 
@@ -75,6 +78,8 @@ public class MarkerController {
     public CompletableFuture<ResponseEntity<LoginResponse>> login(HttpServletRequest request, @RequestBody LoginRequest loginRequest){
         String token = Token.tokenGenerate();
         request.getSession().setAttribute("token",token);
+
+        log.info("sessionid : {}", request.getSession().getId());
         return loginService.login(loginRequest.getUsername(), loginRequest.getPassword())
                 .thenApplyAsync(loginResponse -> {
                     loginResponse.setToken(token);
