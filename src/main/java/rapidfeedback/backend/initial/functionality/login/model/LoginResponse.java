@@ -13,12 +13,14 @@ import java.util.List;
  */
 
 @Data
-@Builder
-public class LoginResponse {
 
+public class LoginResponse {
+    public LoginResponse(){};
     private String token;
 
     private String last_name;
+
+    private String first_name;
 
     private Integer id;
 

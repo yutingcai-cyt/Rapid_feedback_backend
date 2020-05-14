@@ -3,6 +3,7 @@ package rapidfeedback.backend.initial.functionality.register.Service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import rapidfeedback.backend.initial.CommonTools.JsonTool.JsonTransfer;
 import rapidfeedback.backend.initial.functionality.login.model.LoginResponse;
 import rapidfeedback.backend.initial.functionality.register.Dao.RegisterDao;
 import rapidfeedback.backend.initial.model.Marker;
@@ -30,11 +31,7 @@ public class RegisterServiceImpl implements  RegisterService{
 
         return CompletableFuture.supplyAsync(() -> {
             registerDao.addMarker(marker);
-            return LoginResponse.builder()
-                    .is_coordinator(marker.getIs_coordinator())
-                    .id(marker.getId())
-                    .last_name(marker.getLast_name())
-                    .build();
+            return JsonTransfer.transfer(marker, new LoginResponse());
 
         },executor);
     }
