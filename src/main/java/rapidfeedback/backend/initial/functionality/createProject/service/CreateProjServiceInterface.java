@@ -6,5 +6,5 @@ import rapidfeedback.backend.initial.model.Project;
 import java.util.concurrent.CompletableFuture;
 
 public interface CreateProjServiceInterface {
-    CompletableFuture<CreateProjResponse> createProject(Project project);
+    CompletableFuture<CreateProjResponse> createProject(Integer markerId, Project project);
 }
