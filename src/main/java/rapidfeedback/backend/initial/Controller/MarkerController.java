@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rapidfeedback.backend.initial.CommonTools.Exception.CommonError;
+import rapidfeedback.backend.initial.CommonTools.Exception.FBException;
 import rapidfeedback.backend.initial.CommonTools.Token.Token;
 import rapidfeedback.backend.initial.functionality.login.Dao.LoginDao;
 import rapidfeedback.backend.initial.functionality.login.Service.LoginService;
@@ -67,11 +69,13 @@ public class MarkerController {
         String token = Token.tokenGenerate();
         request.getSession().setAttribute("token",token);
 
+
         log.info("sessionid : {}", request.getSession().getId());
         return loginService.login(loginRequest.getUsername(), loginRequest.getPassword())
                 .thenApplyAsync(loginResponse -> {
                     loginResponse.setToken(token);
                     log.info("user {} login with token {}", loginRequest.getUsername(),token);
+
                     return ResponseEntity.ok(loginResponse);
                 },executor);
     }

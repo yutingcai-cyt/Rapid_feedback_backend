@@ -3,9 +3,11 @@ package rapidfeedback.backend.initial.CommonTools.Exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @ControllerAdvice
@@ -20,6 +22,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = FBException.class)
     @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResultBody FBExceptionHandler(FBException e){
         loggeer.error("there is a service error: {}", e.getErrorMsg());
         return ResultBody.error(e.getErrorCode(),e.getErrorMsg());
