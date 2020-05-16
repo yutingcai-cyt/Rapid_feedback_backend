@@ -2,6 +2,7 @@ package rapidfeedback.backend.initial.functionality.student.Dao;
 
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
+import rapidfeedback.backend.initial.functionality.student.model.getStudentResponse;
 import rapidfeedback.backend.initial.model.Student;
 
 import java.util.List;
@@ -26,9 +27,12 @@ public interface StudentDao {
     Student getStudentByStudentNumber(@Param("id") Integer uni_student_number);
 
     @Select("SELECT * from student INNER JOIN student_in_proj ON student.id = student_in_proj.student_id where proj_id = #{projectId}" )
-    List<Student> getStudentsByProjectId(@Param("projectId") Integer projectId);
+    List<getStudentResponse> getStudentsByProjectId(@Param("projectId") Integer projectId);
 
     @Insert("INSERT INTO student_in_proj(proj_id, student_id, group_id) " +
             "VALUES(#{projectId}, #{studentId},0)")
     void addStudentIntoProject(@Param("studentId") Integer studentId, @Param("projectId") Integer projectId);
+
+
+
 }

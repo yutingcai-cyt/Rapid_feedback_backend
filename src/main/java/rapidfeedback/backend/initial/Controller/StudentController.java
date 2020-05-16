@@ -11,6 +11,7 @@ import rapidfeedback.backend.initial.CommonTools.Token.Token;
 import rapidfeedback.backend.initial.functionality.student.Service.StudentService;
 import rapidfeedback.backend.initial.functionality.student.model.AddStudentRequest;
 import rapidfeedback.backend.initial.functionality.student.model.AddStudentResponse;
+import rapidfeedback.backend.initial.functionality.student.model.getStudentResponse;
 import rapidfeedback.backend.initial.model.Student;
 
 import javax.annotation.Resource;
@@ -59,7 +60,7 @@ public class StudentController {
     }
 
     @GetMapping("/{projectId}")
-    public CompletableFuture<ResponseEntity<List<Student>>> getStudentsInProject(HttpServletRequest request, @PathVariable(name = "projectId") Integer projectId){
+    public CompletableFuture<ResponseEntity<List<getStudentResponse>>> getStudentsInProject(HttpServletRequest request, @PathVariable(name = "projectId") Integer projectId){
         String token = request.getHeader("Authorization");
         Token.tokenCheck(request,token);
         return studentService.getStudentdsInProject(projectId).thenApplyAsync(list -> {

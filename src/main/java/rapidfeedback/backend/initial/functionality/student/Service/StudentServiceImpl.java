@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import rapidfeedback.backend.initial.CommonTools.JsonTool.JsonTransfer;
 import rapidfeedback.backend.initial.functionality.student.Dao.StudentDao;
 import rapidfeedback.backend.initial.functionality.student.model.AddStudentResponse;
+import rapidfeedback.backend.initial.functionality.student.model.getStudentResponse;
 import rapidfeedback.backend.initial.model.Student;
 
 import javax.annotation.Resource;
@@ -58,7 +59,7 @@ public class StudentServiceImpl implements  StudentService{
     }
 
     @Override
-    public CompletableFuture<List<Student>> getStudentdsInProject(Integer projectId) {
+    public CompletableFuture<List<getStudentResponse>> getStudentdsInProject(Integer projectId) {
         return CompletableFuture.supplyAsync(() -> studentDao.getStudentsByProjectId(projectId));
     }
 }

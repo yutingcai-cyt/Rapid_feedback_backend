@@ -2,6 +2,7 @@ package rapidfeedback.backend.initial.functionality.student.Service;
 
 import rapidfeedback.backend.initial.functionality.student.model.AddStudentRequest;
 import rapidfeedback.backend.initial.functionality.student.model.AddStudentResponse;
+import rapidfeedback.backend.initial.functionality.student.model.getStudentResponse;
 import rapidfeedback.backend.initial.model.Student;
 
 import java.util.List;
@@ -35,5 +36,5 @@ public interface StudentService {
      * @param projectId
      * @return List<Student>
      */
-    CompletableFuture<List<Student>> getStudentdsInProject(Integer projectId);
+    CompletableFuture<List<getStudentResponse>> getStudentdsInProject(Integer projectId);
 }
