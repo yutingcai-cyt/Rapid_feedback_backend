@@ -3,13 +3,13 @@ package rapidfeedback.backend.initial.model;
 import lombok.Builder;
 import lombok.Data;
 
-@Builder
+
 @Data
 public class Student {
+    public Student(){};
     private Integer id;
-    private String firstName;
-    private String middleName;
-    private String lastName;
-    private Integer studentNumber;
-    private String email;
+    private Integer uni_student_number;
+    private String first_name;
+    private String last_name;
+    private String uni_email;
 }

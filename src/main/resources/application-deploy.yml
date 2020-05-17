@@ -1,3 +1,4 @@
+
 server:
   port: 8099
 
@@ -9,3 +10,4 @@ spring:
     dbcp2:
       test-while-idle: true
       validalstion-query: SELECT 1
+

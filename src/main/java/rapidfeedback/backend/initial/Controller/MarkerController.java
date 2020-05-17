@@ -56,7 +56,8 @@ public class MarkerController {
                 .thenApplyAsync(loginResponse -> {
                     loginResponse.setToken(token);
                     log.info("user {} register with token {}", marker.getId(),token);
-                    return ResponseEntity.ok(loginResponse);
+                    return ResponseEntity
+                            .ok(loginResponse);
                 },executor);
     }
 
@@ -65,6 +66,8 @@ public class MarkerController {
         log.info("sessionId : {}", request.getSession().getId());
         String token = Token.tokenGenerate();
         request.getSession().setAttribute("token",token);
+
+        log.info("sessionid : {}", request.getSession().getId());
         return loginService.login(loginRequest.getUsername(), loginRequest.getPassword())
                 .thenApplyAsync(loginResponse -> {
                     loginResponse.setToken(token);

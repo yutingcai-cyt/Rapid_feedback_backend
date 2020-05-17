@@ -4,8 +4,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+
+/**
+ * @author cyt
+ * @date 2020/5/6
+ */
 @Configuration
-public class CrossOriginConfig implements WebMvcConfigurer{
+public class CrossOriginConfig implements WebMvcConfigurer {
     static final String ORIGINS[] = new String[] {"GET", "POST", "PUT", "DELETE"};
     @Override
     public void addCorsMappings(CorsRegistry registry) {
