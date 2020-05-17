@@ -38,4 +38,10 @@ public class UpdateProjectService implements UpdateProjService{
                     .build();
         },executor);
     }
+
+    @Override
+    public CompletableFuture<Void> addMarker(Integer markerId, Integer projectId){
+        return CompletableFuture.runAsync(() -> updateProjectDao.addMarker(markerId, projectId),executor);
+    }
+
 }

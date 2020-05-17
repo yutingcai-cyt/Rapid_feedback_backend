@@ -97,4 +97,15 @@ public class ProjectController {
         Token.tokenCheck(request, token);
         deleteProjService.deleteProject(projectId);
     }
+
+    @PostMapping("/{id}/addMarker")
+    public CompletableFuture<ResponseEntity<Void>> addMarker(HttpServletRequest request, @PathVariable(name = "id") Integer projectId, @RequestBody Integer markerId){
+        String token = request.getHeader("Authorization");
+        Token.tokenCheck(request, token);
+        return updateProjService.addMarker(markerId, projectId).thenApplyAsync(aVoid ->{
+            log.info("add marker {} into project {}", markerId,projectId );
+            return ResponseEntity.ok(aVoid);
+        },executor);
+    }
+
 }
