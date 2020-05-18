@@ -33,6 +33,7 @@ public class CreateProjectService implements CreateProjServiceInterface{
         return CompletableFuture.supplyAsync(() -> {
             createProjectDao.createProject(project);
             createProjectDao.linkMarkerAndProj(markerId, project.getId());
+            createProjectDao.linkProjAndCriteria(project.getId());
             return CreateProjResponse.builder()
                     .id(project.getId())
                     .subject_code(project.getSubject_code())

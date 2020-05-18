@@ -8,6 +8,6 @@ import lombok.Data;
 @Data
 public class Criteria {
 
-    private Integer id;
-    private String name;
+    private Integer criteriaId;
+    private Integer weight;
 }
