@@ -3,7 +3,10 @@ package rapidfeedback.backend.initial.functionality.updateProject.dao;
 
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
+import rapidfeedback.backend.initial.model.Criteria;
 import rapidfeedback.backend.initial.model.Project;
+
+import java.util.List;
 
 
 /**
@@ -23,6 +26,9 @@ public interface UpdateProjectDao {
     @Insert("INSERT INTO marker_in_proj(marker_id, proj_id) VALUES (#{marker_id}, #{proj_id});")
     void addMarker(@Param("marker_id") Integer markerId, @Param("proj_id") Integer projectId);
 
-    @Update("UPDATE proj_criteria SET weight = #{weight} WHERE proj_id = #{proj_id} AND criteria_id = #{criteria_id}")
-    void updateCriteria(@Param("project_id") Integer projectId, @Param("criteria_id") Integer criteriaId);
+    @Update("UPDATE proj_criteria SET weight = #{weight} WHERE proj_id = #{project_id} AND criteria_id = #{criteria_id}")
+    void updateCriteria(@Param("project_id") Integer projectId, @Param("criteria_id") Integer criteriaId, @Param("weight") Integer weight);
+
+    @Select("SELECT * FROM proj_criteria WHERE proj_id = #{project_id}")
+    List<Criteria> getCriteriaList(@Param("project_id") Integer projectId);
 }
