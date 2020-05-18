@@ -26,9 +26,14 @@ public interface UpdateProjectDao {
     @Insert("INSERT INTO marker_in_proj(marker_id, proj_id) VALUES (#{marker_id}, #{proj_id});")
     void addMarker(@Param("marker_id") Integer markerId, @Param("proj_id") Integer projectId);
 
+    @Select("SELECT marker_id FROM marker_in_proj WHERE proj_id = #{project_id}")
+    List<Integer> getMarker(@Param("project_id") Integer projectId);
+
     @Update("UPDATE proj_criteria SET weight = #{weight} WHERE proj_id = #{project_id} AND criteria_id = #{criteria_id}")
     void updateCriteria(@Param("project_id") Integer projectId, @Param("criteria_id") Integer criteriaId, @Param("weight") Integer weight);
 
     @Select("SELECT * FROM proj_criteria WHERE proj_id = #{project_id}")
     List<Criteria> getCriteriaList(@Param("project_id") Integer projectId);
+
+
 }

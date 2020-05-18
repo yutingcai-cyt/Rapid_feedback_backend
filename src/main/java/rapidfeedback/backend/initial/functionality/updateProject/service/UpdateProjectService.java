@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import rapidfeedback.backend.initial.functionality.createProject.model.CreateProjResponse;
 import rapidfeedback.backend.initial.functionality.updateProject.dao.UpdateProjectDao;
 import rapidfeedback.backend.initial.functionality.updateProject.model.getCriteriaListResponse;
+import rapidfeedback.backend.initial.functionality.updateProject.model.getMarkerResponse;
 import rapidfeedback.backend.initial.model.Criteria;
 import rapidfeedback.backend.initial.model.Project;
 
@@ -46,6 +47,16 @@ public class UpdateProjectService implements UpdateProjService{
     @Override
     public CompletableFuture<Void> addMarker(Integer markerId, Integer projectId){
         return CompletableFuture.runAsync(() -> updateProjectDao.addMarker(markerId, projectId),executor);
+    }
+
+    @Override
+    public CompletableFuture<getMarkerResponse> getMarker(Integer projectId){
+        CompletableFuture<List<Integer>> future = CompletableFuture.supplyAsync(() -> updateProjectDao.getMarker(projectId));
+        return future.thenApplyAsync(marker -> {
+            log.info("Criteria load");
+            return getMarkerResponse.builder()
+                    .markerIdList(marker).build();
+        }, executor);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package rapidfeedback.backend.initial.functionality.group.Service;
 
-import com.sun.xml.internal.ws.util.CompletedFuture;
+
 import rapidfeedback.backend.initial.functionality.group.model.StudentId;
 
 import java.util.List;

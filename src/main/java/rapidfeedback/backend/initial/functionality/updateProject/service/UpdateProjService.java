@@ -2,6 +2,7 @@ package rapidfeedback.backend.initial.functionality.updateProject.service;
 
 import rapidfeedback.backend.initial.functionality.createProject.model.CreateProjResponse;
 import rapidfeedback.backend.initial.functionality.updateProject.model.getCriteriaListResponse;
+import rapidfeedback.backend.initial.functionality.updateProject.model.getMarkerResponse;
 import rapidfeedback.backend.initial.model.Criteria;
 import rapidfeedback.backend.initial.model.Project;
 
@@ -12,6 +13,8 @@ public interface UpdateProjService {
     CompletableFuture<CreateProjResponse> updateProject(Project project, Integer projectId);
 
     CompletableFuture<Void> addMarker(Integer markerId, Integer projectId);
+
+    CompletableFuture<getMarkerResponse> getMarker(Integer projectId);
 
     void updateCriteria(Integer projectId, List<Criteria> criteriaList);
 
