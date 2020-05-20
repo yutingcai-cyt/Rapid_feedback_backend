@@ -38,8 +38,7 @@ public class CreateProjectService implements CreateProjServiceInterface{
                     .subject_code(project.getSubject_code())
                     .subject_name(project.getSubject_name())
                     .proj_name(project.getProj_name())
-                    .duration_min(project.getDuration_min())
-                    .duration_sec(project.getDuration_sec())
+                    .duration(project.getDuration())
                     .is_group(project.getIs_group())
                     .proj_description(project.getProj_description())
                     .build();

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.experimental.Tolerate;
 
 import java.io.Serializable;
-import java.util.HashMap;
+
 
 
 @Data
@@ -16,8 +16,8 @@ public class Project implements Serializable {
     private String subject_code;
     private String subject_name;
     private String proj_name;
-    private Integer duration_min;
-    private Integer duration_sec;
+    private Integer duration;
+    //private due_date;
     private Integer is_group;
     private String proj_description;
 
