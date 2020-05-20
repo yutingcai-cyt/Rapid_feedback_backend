@@ -3,6 +3,7 @@ package rapidfeedback.backend.initial.functionality.student.Service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import rapidfeedback.backend.initial.CommonTools.CompletableFuture.CompletableFutureTool;
 import rapidfeedback.backend.initial.CommonTools.JsonTool.JsonTransfer;
 import rapidfeedback.backend.initial.functionality.student.Dao.StudentDao;
 import rapidfeedback.backend.initial.functionality.student.model.AddStudentResponse;
@@ -13,6 +14,7 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Collectors;
 
 /**
  * @author cyt
@@ -29,6 +31,16 @@ public class StudentServiceImpl implements  StudentService{
 
     @Resource(name = "serviceThreadPool")
     private ThreadPoolExecutor executor;
+
+
+    @Override
+    public CompletableFuture<List<AddStudentResponse>> batchAddStudents(List<Student> studentList, Integer projectId) {
+        List<CompletableFuture<AddStudentResponse>> futureList = studentList.parallelStream()
+                .map(student -> addStudent(student,projectId))
+                .collect(Collectors.toList());
+        return CompletableFutureTool.allOf(futureList);
+    }
+
 
     @Override
     public CompletableFuture<AddStudentResponse> addStudent(Student student, Integer projectId) {
@@ -53,6 +65,7 @@ public class StudentServiceImpl implements  StudentService{
 
 
 
+
     @Override
     public CompletableFuture<Void> deleteStudentFromProject(Integer studentId, Integer projectId) {
         return CompletableFuture.runAsync(() -> studentDao.deleteStudent(studentId,projectId),executor);
@@ -62,4 +75,6 @@ public class StudentServiceImpl implements  StudentService{
     public CompletableFuture<List<getStudentResponse>> getStudentdsInProject(Integer projectId) {
         return CompletableFuture.supplyAsync(() -> studentDao.getStudentsByProjectId(projectId));
     }
+
+
 }
