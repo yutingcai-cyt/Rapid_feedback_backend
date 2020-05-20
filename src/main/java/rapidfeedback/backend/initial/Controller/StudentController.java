@@ -11,11 +11,13 @@ import rapidfeedback.backend.initial.CommonTools.Token.Token;
 import rapidfeedback.backend.initial.functionality.student.Service.StudentService;
 import rapidfeedback.backend.initial.functionality.student.model.AddStudentRequest;
 import rapidfeedback.backend.initial.functionality.student.model.AddStudentResponse;
+import rapidfeedback.backend.initial.functionality.student.model.BatchAddStudentRequest;
 import rapidfeedback.backend.initial.functionality.student.model.getStudentResponse;
 import rapidfeedback.backend.initial.model.Student;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.ws.Response;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -46,6 +48,17 @@ public class StudentController {
                 .thenApplyAsync(addStudentResponse -> {
                     log.info("add student {} into project {}", addStudentResponse.getStudent_id(),addStudentResponse.getProject_id());
                     return ResponseEntity.ok(addStudentResponse);
+                },executor);
+    }
+
+    @PostMapping("/batch")
+    public CompletableFuture<ResponseEntity<List<AddStudentResponse>>> batchAddStudentIntoProject(HttpServletRequest request, @RequestBody BatchAddStudentRequest batchAddStudentRequest){
+        String token = request.getHeader("Authorization");
+        Token.tokenCheck(request,token);
+        return studentService.batchAddStudents(batchAddStudentRequest.getStudentList(),batchAddStudentRequest.getProject_id())
+                .thenApplyAsync(response -> {
+                    log.info("add students {} into project with id {}",batchAddStudentRequest.getStudentList(),batchAddStudentRequest.getProject_id());
+                    return ResponseEntity.ok(response);
                 },executor);
     }
 

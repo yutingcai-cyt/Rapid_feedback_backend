@@ -37,4 +37,12 @@ public interface StudentService {
      * @return List<Student>
      */
     CompletableFuture<List<getStudentResponse>> getStudentdsInProject(Integer projectId);
+
+    /**
+     * batch import students into a project
+     * @param studentList
+     * @param projectId
+     * @return
+     */
+    CompletableFuture<List<AddStudentResponse>> batchAddStudents(List<Student> studentList, Integer projectId);
 }
