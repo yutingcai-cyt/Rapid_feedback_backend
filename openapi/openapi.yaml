@@ -156,6 +156,68 @@ paths:
         200:
           description: OK
 
+    delete:
+      tags:
+        - project
+      operationId: deleteProject
+      description: 'delete a project according to id'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        204:
+          description: 'deleted'
+
+  /v1/addMarker:
+    post:
+      tags:
+        - project
+      operationId: addMarkerIntoAProject
+      description: 'add marker into a project'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                projId:
+                  type: integer
+                  description: 'projectId'
+                markerId:
+                  type: integer
+                  description: 'markerId'
+      responses:
+        201:
+          description: 'added'
+
+  /v1/{id}/getMarker:
+    get:
+      tags:
+        - project
+      operationId: getAllMarkersOfAProject
+      description: 'get all markers of a project'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: 'ok'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  markerIdList:
+                    type: array
+                    items:
+                      type: integer
+                      description: 'markerId'
 
 
 
@@ -196,12 +258,31 @@ paths:
         204:
           description: "deleted"
 
-
-  /criterian/add:
-    post:
+  /v1/{id}/getCriteria:
+    get:
       tags:
         - criteria
-      operationId: addCriterian
+      operationId: getAllCriteriaForAProject
+      description: "get all criterian of a specific project"
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: 'ok'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCriteriaListReponse'
+
+  /v1/projects/setCriteria:
+    put:
+      tags:
+        - criteria
+      operationId: addCriterianInto
       description:
         'add assess criterian to one peoject'
       requestBody:
@@ -212,6 +293,49 @@ paths:
       responses:
         201:
           description: Added
+
+  /v1/students/batch:
+    post:
+      tags:
+        - student
+      operationId: batchImportStudent
+      description: 'batch import students into a project'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  type: integer
+                studentList:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Student'
+      responses:
+        201:
+          description: 'added'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  studentList:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Student'
+                        - type: object
+                          properties:
+                            student_id:
+                              type: integer
+                              description: "id of the student"
+                            project_id:
+                              type: integer
+                              description: "id of the project"
+
+
+
   /v1/students:
     post:
       tags:
@@ -244,6 +368,7 @@ paths:
                       project_id:
                         type: integer
                         description: "id of the project"
+
 
   /v1/students/{projectId}:
     get:
@@ -455,14 +580,17 @@ components:
     Criteria:
       type: object
       description: 'details we can get from the database table attributes'
+      properties:
+        criteriaId:
+          type: integer
+        weight:
+          type: integer
 
     AddCriterianRequest:
       type: object
       properties:
-        token:
-          type: string
-        project:
-          $ref: '#/components/schemas/Project'
+        id:
+          type: integer
         criterian:
           type: array
           items:
@@ -580,6 +708,14 @@ components:
             properties:
               student_id:
                 type: integer
+    GetCriteriaListReponse:
+      type: object
+      properties:
+        criteriaList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Criteria'
+
 
 
 
