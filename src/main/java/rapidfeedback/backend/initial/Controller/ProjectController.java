@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import rapidfeedback.backend.initial.CommonTools.JsonTool.JsonTransfer;
 import rapidfeedback.backend.initial.CommonTools.Token.Token;
+import rapidfeedback.backend.initial.functionality.createProject.model.CreateProjRequest;
 import rapidfeedback.backend.initial.functionality.createProject.model.CreateProjResponse;
 import rapidfeedback.backend.initial.functionality.createProject.service.CreateProjectService;
 import rapidfeedback.backend.initial.functionality.deleteProject.service.DeleteProjService;
@@ -69,13 +71,14 @@ public class ProjectController {
                 },executor);
     }
 
-    @PostMapping("/{id}")
-    public CompletableFuture<ResponseEntity<CreateProjResponse>> createProject(HttpServletRequest request, @RequestBody Project project, @PathVariable("id") Integer markerId) {
+    @PostMapping("")
+    public CompletableFuture<ResponseEntity<CreateProjResponse>> createProject(HttpServletRequest request, @RequestBody CreateProjRequest createProjRequest) {
         String token = request.getHeader("Authorization");
         Token.tokenCheck(request, token);
-        return createProjectService.createProject(markerId, project)
+        Project project = JsonTransfer.transfer(createProjRequest, new Project());
+        return createProjectService.createProject(createProjRequest.getMarkerId(), project)
                 .thenApplyAsync(createProjResponse -> {
-                    log.info("user {} create project", markerId);
+                    log.info("create project {} by user {}", project.getId(), createProjRequest.getMarkerId());
                     return ResponseEntity.ok(createProjResponse);
                 }, executor);
     }
@@ -92,9 +95,12 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteProject(HttpServletRequest request, @PathVariable("id") Integer projectId){
+    public CompletableFuture<ResponseEntity<Void>> deleteProject(HttpServletRequest request, @PathVariable("id") Integer projectId){
         String token = request.getHeader("Authorization");
         Token.tokenCheck(request, token);
-        deleteProjService.deleteProject(projectId);
+        return deleteProjService.deleteProject(projectId).thenApplyAsync(aVoid ->{
+            log.info("delete project {}", projectId );
+            return ResponseEntity.ok(aVoid);
+        },executor);
     }
 }

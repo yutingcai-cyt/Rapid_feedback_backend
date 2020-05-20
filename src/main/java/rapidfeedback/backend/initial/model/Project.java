@@ -22,5 +22,5 @@ public class Project implements Serializable {
     private String proj_description;
 
     @Tolerate
-    Project() {}
+    public Project() {}
 }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import rapidfeedback.backend.initial.functionality.createProject.dao.CreateProjectDao;
 
 import rapidfeedback.backend.initial.functionality.createProject.model.CreateProjResponse;
-import rapidfeedback.backend.initial.model.CreateProject;
 import rapidfeedback.backend.initial.model.Project;
 
 import javax.annotation.Resource;
