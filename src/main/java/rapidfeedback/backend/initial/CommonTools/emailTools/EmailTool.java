@@ -22,7 +22,7 @@ import java.io.File;
 public class EmailTool {
 
     @Autowired
-    private  JavaMailSender mailSender;
+    private  static JavaMailSender mailSender;
 
     private static final String SENDER = "15221570989@163.com";
 
