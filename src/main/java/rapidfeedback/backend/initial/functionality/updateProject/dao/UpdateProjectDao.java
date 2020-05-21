@@ -19,21 +19,20 @@ import java.util.List;
 public interface UpdateProjectDao {
 
     @Update("UPDATE project SET subject_code = #{project.subject_code}, subject_name = #{project.subject_name}," +
-            "proj_name = #{project.proj_name}, duration_min = #{project.duration_min}, duration_sec = #{project.duration_sec}," +
-            "is_group = #{project.is_group}, proj_description = #{project.proj_description} WHERE id = #{project_id}")
-    void updateProject(@Param("project") Project project, @Param("project_id") Integer projectId);
+            "proj_name = #{project.proj_name}, duration = #{project.duration}," +
+            "is_group = #{project.is_group}, proj_description = #{project.proj_description} WHERE id = #{projectId}")
+    void updateProject(@Param("project") Project project, @Param("projectId") Integer projectId);
 
-    @Insert("INSERT INTO marker_in_proj(marker_id, proj_id) VALUES (#{marker_id}, #{proj_id});")
-    void addMarker(@Param("marker_id") Integer markerId, @Param("proj_id") Integer projectId);
+    @Insert("INSERT INTO marker_in_proj(marker_id, proj_id) VALUES (#{markerId}, #{projectId});")
+    void addMarker(@Param("markerId") Integer markerId, @Param("projectId") Integer projectId);
 
     @Select("SELECT marker_id FROM marker_in_proj WHERE proj_id = #{project_id}")
     List<Integer> getMarker(@Param("project_id") Integer projectId);
 
-    @Update("UPDATE proj_criteria SET weight = #{weight} WHERE proj_id = #{project_id} AND criteria_id = #{criteria_id}")
-    void updateCriteria(@Param("project_id") Integer projectId, @Param("criteria_id") Integer criteriaId, @Param("weight") Integer weight);
+    @Update("UPDATE proj_criteria SET weight = #{weight} WHERE proj_id = #{projectId} AND criteria_id = #{criteriaId}")
+    void updateCriteria(@Param("projectId") Integer projectId, @Param("criteriaId") Integer criteriaId, @Param("weight") Integer weight);
 
-    @Select("SELECT * FROM proj_criteria WHERE proj_id = #{project_id}")
-    List<Criteria> getCriteriaList(@Param("project_id") Integer projectId);
-
+    @Select("SELECT criteria_id, weight FROM proj_criteria WHERE proj_id = #{projectId}")
+    List<Criteria> getCriteriaList(@Param("projectId") Integer projectId);
 
 }

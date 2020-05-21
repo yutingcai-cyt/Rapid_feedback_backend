@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rapidfeedback.backend.initial.functionality.createProject.model.CreateProjResponse;
 import rapidfeedback.backend.initial.functionality.updateProject.dao.UpdateProjectDao;
-import rapidfeedback.backend.initial.functionality.updateProject.model.getCriteriaListResponse;
-import rapidfeedback.backend.initial.functionality.updateProject.model.getMarkerResponse;
+import rapidfeedback.backend.initial.functionality.updateProject.model.GetCriteriaResponse;
+import rapidfeedback.backend.initial.functionality.updateProject.model.GetMarkerResponse;
 import rapidfeedback.backend.initial.model.Criteria;
 import rapidfeedback.backend.initial.model.Project;
 
@@ -36,8 +36,7 @@ public class UpdateProjectService implements UpdateProjService{
                     .subject_code(project.getSubject_code())
                     .subject_name(project.getSubject_name())
                     .proj_name(project.getProj_name())
-                    .duration_min(project.getDuration_min())
-                    .duration_sec(project.getDuration_sec())
+                    .duration(project.getDuration())
                     .is_group(project.getIs_group())
                     .proj_description(project.getProj_description())
                     .build();
@@ -45,23 +44,27 @@ public class UpdateProjectService implements UpdateProjService{
     }
 
     @Override
-    public CompletableFuture<Void> addMarker(Integer markerId, Integer projectId){
-        return CompletableFuture.runAsync(() -> updateProjectDao.addMarker(markerId, projectId),executor);
+    public void addMarker(List<Integer> markerIdList, Integer projectId) {
+        for (int i = 0; i < markerIdList.size(); i++) {
+            Integer markerId = markerIdList.get(i);
+            updateProjectDao.addMarker(markerId, projectId);
+        }
     }
 
     @Override
-    public CompletableFuture<getMarkerResponse> getMarker(Integer projectId){
+    public CompletableFuture<GetMarkerResponse> getMarker(Integer projectId){
         CompletableFuture<List<Integer>> future = CompletableFuture.supplyAsync(() -> updateProjectDao.getMarker(projectId));
         return future.thenApplyAsync(marker -> {
             log.info("Criteria load");
-            return getMarkerResponse.builder()
+            return GetMarkerResponse.builder()
+
                     .markerIdList(marker).build();
         }, executor);
     }
 
     @Override
-    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-    public void updateCriteria(Integer projectId, List<Criteria> criteriaList){
+
+    public void updateCriteria(Integer projectId, List<Criteria> criteriaList) {
         for (int i = 0; i < criteriaList.size(); i++) {
             updateProjectDao.updateCriteria(projectId, criteriaList.get(i).getCriteriaId(), criteriaList.get(i).getWeight());
         }
@@ -69,11 +72,11 @@ public class UpdateProjectService implements UpdateProjService{
     }
 
     @Override
-    public CompletableFuture<getCriteriaListResponse> getCriteriaList(Integer projectId){
+    public CompletableFuture<GetCriteriaResponse> getCriteria(Integer projectId) {
         CompletableFuture<List<Criteria>> future = CompletableFuture.supplyAsync(() -> updateProjectDao.getCriteriaList(projectId));
         return future.thenApplyAsync(criteria -> {
             log.info("Criteria load");
-            return getCriteriaListResponse.builder()
+            return GetCriteriaResponse.builder()
                     .criteriaList(criteria).build();
         }, executor);
     }

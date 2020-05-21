@@ -18,8 +18,8 @@ import rapidfeedback.backend.initial.model.Project;
 @Repository
 public interface CreateProjectDao {
 
-    @Insert("INSERT INTO project(subject_code, subject_name, proj_name, duration_min, duration_sec, is_group, proj_description) " +
-            "VALUES(#{project.subject_code},#{project.subject_name},#{project.proj_name},#{project.duration_min},#{project.duration_sec},#{project.is_group},#{project.proj_description})")
+    @Insert("INSERT INTO project(subject_code, subject_name, proj_name, duration, is_group, proj_description) " +
+            "VALUES(#{project.subject_code}, #{project.subject_name}, #{project.proj_name}, #{project.duration}, #{project.is_group}, #{project.proj_description})")
     @Options(useGeneratedKeys = true, keyProperty = "project.id")
     Integer createProject(@Param("project") Project project);
 
