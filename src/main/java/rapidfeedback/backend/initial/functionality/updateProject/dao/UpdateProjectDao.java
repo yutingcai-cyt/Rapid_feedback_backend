@@ -17,6 +17,10 @@ public interface UpdateProjectDao {
 
     @Update("UPDATE project SET subject_code = #{project.subject_code}, subject_name = #{project.subject_name}," +
             "proj_name = #{project.proj_name}, duration = #{project.duration}," +
-            "is_group = #{project.is_group}, proj_description = #{project.proj_description} WHERE id = #{project_id}")
-    void updateProject(@Param("project") Project project, @Param("project_id") Integer projectId);
+            "is_group = #{project.is_group}, proj_description = #{project.proj_description} WHERE id = #{projectId}")
+    void updateProject(@Param("project") Project project, @Param("projectId") Integer projectId);
+
+    @Insert("INSERT INTO marker_in_proj(marker_id, proj_id) VALUES (#{markerId}, #{projectId});")
+    void addMarker(@Param("markerId") Integer markerId, @Param("projectId") Integer projectId);
+
 }

@@ -9,18 +9,16 @@ import rapidfeedback.backend.initial.CommonTools.Token.Token;
 import rapidfeedback.backend.initial.functionality.createProject.model.CreateProjRequest;
 import rapidfeedback.backend.initial.functionality.createProject.model.CreateProjResponse;
 import rapidfeedback.backend.initial.functionality.createProject.service.CreateProjectService;
-import rapidfeedback.backend.initial.functionality.deleteProject.service.DeleteProjService;
+import rapidfeedback.backend.initial.functionality.deleteProject.service.DeleteProjectService;
 import rapidfeedback.backend.initial.functionality.loadProjectList.Dao.LoadProjectDao;
 import rapidfeedback.backend.initial.functionality.loadProjectList.model.LoadProjectRespond;
 import rapidfeedback.backend.initial.functionality.loadProjectList.Service.LoadProjectService;
-import rapidfeedback.backend.initial.functionality.updateProject.service.UpdateProjService;
-import rapidfeedback.backend.initial.model.CreateProject;
+import rapidfeedback.backend.initial.functionality.updateProject.model.AddMarkerRequest;
+import rapidfeedback.backend.initial.functionality.updateProject.service.UpdateProjectService;
 import rapidfeedback.backend.initial.model.Project;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.transform.Result;
-import javax.xml.ws.Response;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -45,10 +43,10 @@ public class ProjectController {
     private CreateProjectService createProjectService;
 
     @Autowired
-    private UpdateProjService updateProjService;
+    private UpdateProjectService updateProjectService;
 
     @Autowired
-    private DeleteProjService deleteProjService;
+    private DeleteProjectService deleteProjectService;
 
     @Resource(name = "controllerThreadPool")
     private ThreadPoolExecutor executor;
@@ -87,7 +85,7 @@ public class ProjectController {
     public CompletableFuture<ResponseEntity<CreateProjResponse>> updateProject(HttpServletRequest request, @RequestBody Project project, @PathVariable("id") Integer projectId){
         String token = request.getHeader("Authorization");
         Token.tokenCheck(request, token);
-        return updateProjService.updateProject(project, projectId)
+        return updateProjectService.updateProject(project, projectId)
                 .thenApplyAsync(createProjResponse -> {
                     log.info("user {} update project", projectId);
                     return ResponseEntity.ok(createProjResponse);
@@ -98,9 +96,18 @@ public class ProjectController {
     public CompletableFuture<ResponseEntity<Void>> deleteProject(HttpServletRequest request, @PathVariable("id") Integer projectId){
         String token = request.getHeader("Authorization");
         Token.tokenCheck(request, token);
-        return deleteProjService.deleteProject(projectId).thenApplyAsync(aVoid ->{
+        return deleteProjectService.deleteProject(projectId).thenApplyAsync(aVoid ->{
             log.info("delete project {}", projectId );
             return ResponseEntity.ok(aVoid);
         },executor);
+    }
+
+    @PostMapping("/addMarker")
+    public void addMarker(HttpServletRequest request, @RequestBody AddMarkerRequest addMarkerRequest){
+        String token = request.getHeader("Authorization");
+        Token.tokenCheck(request, token);
+        List<Integer> markerIdList = addMarkerRequest.getMarkerIdList();
+        updateProjectService.addMarker(markerIdList, addMarkerRequest.getProjectId());
+        log.info("add marker in project {}", addMarkerRequest.getProjectId());
     }
 }

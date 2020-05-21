@@ -8,6 +8,7 @@ import rapidfeedback.backend.initial.functionality.updateProject.dao.UpdateProje
 import rapidfeedback.backend.initial.model.Project;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -36,5 +37,13 @@ public class UpdateProjectService implements UpdateProjService{
                     .proj_description(project.getProj_description())
                     .build();
         },executor);
+    }
+
+    @Override
+    public void addMarker(List<Integer> markerIdList, Integer projectId) {
+        for (int i = 0; i < markerIdList.size(); i++) {
+            Integer markerId = markerIdList.get(i);
+            updateProjectDao.addMarker(markerId, projectId);
+        }
     }
 }
