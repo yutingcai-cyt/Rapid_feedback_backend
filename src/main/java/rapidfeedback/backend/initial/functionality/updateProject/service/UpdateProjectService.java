@@ -1,5 +1,6 @@
 package rapidfeedback.backend.initial.functionality.updateProject.service;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,11 +57,13 @@ public class UpdateProjectService implements UpdateProjService{
         return future.thenApplyAsync(marker -> {
             log.info("Criteria load");
             return GetMarkerResponse.builder()
+
                     .markerIdList(marker).build();
         }, executor);
     }
 
     @Override
+
     public void updateCriteria(Integer projectId, List<Criteria> criteriaList) {
         for (int i = 0; i < criteriaList.size(); i++) {
             updateProjectDao.updateCriteria(projectId, criteriaList.get(i).getCriteriaId(), criteriaList.get(i).getWeight());
@@ -77,5 +80,4 @@ public class UpdateProjectService implements UpdateProjService{
                     .criteriaList(criteria).build();
         }, executor);
     }
-
 }

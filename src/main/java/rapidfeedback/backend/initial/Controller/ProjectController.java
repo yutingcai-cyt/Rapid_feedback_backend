@@ -133,6 +133,7 @@ public class ProjectController {
                 .thenApplyAsync(getCriteriaResponse -> {
                     log.info("project {}'s criteria list", projectId);
                     return ResponseEntity.ok(getCriteriaResponse);
+
                 },executor);
     }
 
