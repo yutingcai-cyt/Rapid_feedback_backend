@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 import rapidfeedback.backend.initial.model.Project;
 
+import java.util.List;
+
 
 /**
  * @author wmn
@@ -22,5 +24,8 @@ public interface UpdateProjectDao {
 
     @Insert("INSERT INTO marker_in_proj(marker_id, proj_id) VALUES (#{markerId}, #{projectId});")
     void addMarker(@Param("markerId") Integer markerId, @Param("projectId") Integer projectId);
+
+    @Select("SELECT marker_id FROM marker_in_proj WHERE proj_id = #{project_id}")
+    List<Integer> getMarker(@Param("project_id") Integer projectId);
 
 }

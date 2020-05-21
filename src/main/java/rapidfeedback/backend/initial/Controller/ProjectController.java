@@ -14,6 +14,7 @@ import rapidfeedback.backend.initial.functionality.loadProjectList.Dao.LoadProje
 import rapidfeedback.backend.initial.functionality.loadProjectList.model.LoadProjectRespond;
 import rapidfeedback.backend.initial.functionality.loadProjectList.Service.LoadProjectService;
 import rapidfeedback.backend.initial.functionality.updateProject.model.AddMarkerRequest;
+import rapidfeedback.backend.initial.functionality.updateProject.model.GetMarkerResponse;
 import rapidfeedback.backend.initial.functionality.updateProject.service.UpdateProjectService;
 import rapidfeedback.backend.initial.model.Project;
 
@@ -110,4 +111,16 @@ public class ProjectController {
         updateProjectService.addMarker(markerIdList, addMarkerRequest.getProjectId());
         log.info("add marker in project {}", addMarkerRequest.getProjectId());
     }
+
+    @GetMapping("/{id}/getMarker")
+    public CompletableFuture<ResponseEntity<GetMarkerResponse>> getMarker(HttpServletRequest request, @PathVariable(name = "id") Integer projectId) {
+        String token = request.getHeader("Authorization");
+        Token.tokenCheck(request, token);
+        return updateProjectService.getMarker(projectId)
+                .thenApplyAsync(getMarkerResponse -> {
+                    log.info("project {}'s marker list", projectId);
+                    return ResponseEntity.ok(getMarkerResponse);
+                }, executor);
+    }
+
 }

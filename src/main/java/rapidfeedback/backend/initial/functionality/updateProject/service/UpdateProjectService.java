@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rapidfeedback.backend.initial.functionality.createProject.model.CreateProjResponse;
 import rapidfeedback.backend.initial.functionality.updateProject.dao.UpdateProjectDao;
+import rapidfeedback.backend.initial.functionality.updateProject.model.GetMarkerResponse;
 import rapidfeedback.backend.initial.model.Project;
 
 import javax.annotation.Resource;
@@ -45,5 +46,15 @@ public class UpdateProjectService implements UpdateProjService{
             Integer markerId = markerIdList.get(i);
             updateProjectDao.addMarker(markerId, projectId);
         }
+    }
+
+    @Override
+    public CompletableFuture<GetMarkerResponse> getMarker(Integer projectId){
+        CompletableFuture<List<Integer>> future = CompletableFuture.supplyAsync(() -> updateProjectDao.getMarker(projectId));
+        return future.thenApplyAsync(marker -> {
+            log.info("Criteria load");
+            return GetMarkerResponse.builder()
+                    .markerIdList(marker).build();
+        }, executor);
     }
 }
