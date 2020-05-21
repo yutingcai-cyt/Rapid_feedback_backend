@@ -14,8 +14,10 @@ import rapidfeedback.backend.initial.functionality.loadProjectList.Dao.LoadProje
 import rapidfeedback.backend.initial.functionality.loadProjectList.model.LoadProjectRespond;
 import rapidfeedback.backend.initial.functionality.loadProjectList.Service.LoadProjectService;
 import rapidfeedback.backend.initial.functionality.updateProject.model.AddMarkerRequest;
+import rapidfeedback.backend.initial.functionality.updateProject.model.GetCriteriaResponse;
 import rapidfeedback.backend.initial.functionality.updateProject.model.GetMarkerResponse;
 import rapidfeedback.backend.initial.functionality.updateProject.service.UpdateProjectService;
+import rapidfeedback.backend.initial.model.Criteria;
 import rapidfeedback.backend.initial.model.Project;
 
 import javax.annotation.Resource;
@@ -121,6 +123,24 @@ public class ProjectController {
                     log.info("project {}'s marker list", projectId);
                     return ResponseEntity.ok(getMarkerResponse);
                 }, executor);
+    }
+
+    @GetMapping("/{id}/getCriteria")
+    public CompletableFuture<ResponseEntity<GetCriteriaResponse>> getCriteriaList(HttpServletRequest request, @PathVariable(name = "id") Integer projectId){
+        String token = request.getHeader("Authorization");
+        Token.tokenCheck(request, token);
+        return updateProjectService.getCriteria(projectId)
+                .thenApplyAsync(getCriteriaResponse -> {
+                    log.info("project {}'s criteria list", projectId);
+                    return ResponseEntity.ok(getCriteriaResponse);
+                },executor);
+    }
+
+    @PutMapping("/{id}/setCriteria")
+    public void updateCriteria(HttpServletRequest request, @PathVariable(name = "id") Integer projectId, @RequestBody List<Criteria> criteriaList){
+        String token = request.getHeader("Authorization");
+        Token.tokenCheck(request, token);
+        updateProjectService.updateCriteria(projectId, criteriaList);
     }
 
 }
