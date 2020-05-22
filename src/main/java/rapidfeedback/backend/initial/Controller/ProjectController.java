@@ -90,6 +90,7 @@ public class ProjectController {
         Token.tokenCheck(request, token);
         return updateProjectService.updateProject(project, projectId)
                 .thenApplyAsync(createProjResponse -> {
+                    log.info("due_date: {}", project.getDue_date());
                     log.info("user {} update project", projectId);
                     return ResponseEntity.ok(createProjResponse);
                 }, executor);

@@ -19,7 +19,7 @@ import java.util.List;
 public interface UpdateProjectDao {
 
     @Update("UPDATE project SET subject_code = #{project.subject_code}, subject_name = #{project.subject_name}," +
-            "proj_name = #{project.proj_name}, duration = #{project.duration}," +
+            "proj_name = #{project.proj_name}, duration = #{project.duration}, due_date = #{project.due_date}, " +
             "is_group = #{project.is_group}, proj_description = #{project.proj_description} WHERE id = #{projectId}")
     void updateProject(@Param("project") Project project, @Param("projectId") Integer projectId);
 
