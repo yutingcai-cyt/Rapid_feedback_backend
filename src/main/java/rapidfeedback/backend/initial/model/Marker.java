@@ -5,9 +5,10 @@ import com.fasterxml.jackson.databind.util.JSONPObject;
 import lombok.Builder;
 import lombok.Data;
 
-@Builder
+
 @Data
 public class Marker {
+    public Marker(){};
     private Integer id;
     private Integer uni_id;
     private String uni_email;

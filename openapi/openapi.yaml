@@ -14,6 +14,7 @@ tags:
   - name: "group"
 
 paths:
+
   /v1/markers/login:
     post:
       tags:
@@ -310,6 +311,21 @@ paths:
       responses:
         201:
           description: Added
+  /v1/students/template:
+    get:
+      tags:
+        - student
+      operationId: getExcelTemplate
+      description: 'get the template of excel file for batch import students'
+      responses:
+        200:
+          description: A excel file
+          content:
+            application/excel:
+              schema:
+                type: string
+                format: binary
+
 
   /v1/students/batch:
     post:
@@ -413,6 +429,10 @@ paths:
                       properties:
                         id:
                           type: integer
+                        isAssessed:
+                          type: integer
+                          description: '0 -> not assessed; 1 -> assessed'
+
 
   /v1/students/{studentId}/{projectId}:
     delete:

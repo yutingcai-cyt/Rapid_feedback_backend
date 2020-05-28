@@ -9,15 +9,16 @@ import rapidfeedback.backend.initial.model.Project;
  */
 @Data
 public class EmailInfo {
-    public static String  createEmailContent(){
-        return "Dear COMP90082 Software Project {SubjectCode&SubjectName } student,<br>" +
+    public static String  createEmailContent(String subjectCode, String subjectName, String projectName,
+                                             Double maxMark, Double score){
+        return "Dear "+subjectCode+" "+subjectName+" student,<br> <br> <br>" +
 
-                "Attached is your mark breakdown and feedback for Project1 {ProjectName}. The assignment was marked out of  39 {yourMark}," +
-                "and it makes up 40 {maxMark} of your final subject mark. <br>" +
+                "Attached is your mark breakdown and feedback for "+projectName+". The assignment was marked out of "+score +
+                "and it makes up "+maxMark+" of your final subject mark. <br> <br> <br>" +
 
                 "Please contact us if you have any further questions about your mark or feedback.<br>" +
 
                 "Best wishes,<br>" +
-                "The COMP90082 Software Project {SubjectCode&SubjectName} team";
+                "The "+subjectCode+" "+subjectName+" team";
     }
 }
