@@ -85,7 +85,7 @@ public class UpdateProjectService implements UpdateProjService{
                     .criteriaList(criteria).build();
         }, executor);
     }
-<<<<<<< HEAD
+
 
     @Override
     public CompletableFuture<AddCriteriaResponse> addCriteria(Integer projectId, CriteriaData criteria, Integer weight) {
@@ -98,6 +98,5 @@ public class UpdateProjectService implements UpdateProjService{
         },executor);
     }
 
-=======
->>>>>>> 9c7a24d784207d696604e0d8f28ff24a4d8aecd3
+
 }

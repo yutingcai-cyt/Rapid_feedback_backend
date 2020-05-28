@@ -10,12 +10,10 @@ import java.util.List;
 
 @Data
 @Builder
-public class updateCriteriaRequest {
-
+public class UpdateCriteriaRequest {
     private List<Criteria> criteriaList;
 
     public String toString(){
         return JSONObject.toJSONString(this);
     }
-
 }

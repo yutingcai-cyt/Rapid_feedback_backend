@@ -9,7 +9,8 @@ import java.util.List;
 
 @Data
 @Builder
-public class getMarkerResponse {
+
+public class GetMarkerResponse {
 
     private List<Integer> markerIdList;
 
