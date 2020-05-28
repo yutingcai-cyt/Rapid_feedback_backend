@@ -1,9 +1,6 @@
 package rapidfeedback.backend.initial.functionality.createProject.dao;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 import rapidfeedback.backend.initial.model.CreateProject;
 import rapidfeedback.backend.initial.model.Project;
@@ -30,5 +27,9 @@ public interface CreateProjectDao {
             "VALUES(#{projectId}, 1, 0), (#{projectId}, 2, 0), (#{projectId}, 3, 0), " +
             "(#{projectId}, 4, 0), (#{projectId}, 5, 0), (#{projectId}, 6, 0), (#{projectId}, 7, 0)")
     void linkProjAndCriteria(@Param("projectId") Integer projectId);
+
+
+    @Select("SELECT * FROM project where id = #{projectId}")
+    Project getProjectById(@Param("projectId") Integer projectId);
 
 }

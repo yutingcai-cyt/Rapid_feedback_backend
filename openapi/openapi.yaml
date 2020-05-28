@@ -1,5 +1,4 @@
 
-
 openapi: 3.0.0
 info:
   title: "rapid feedback"
@@ -78,7 +77,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Project'
+              allOf:
+                - $ref: '#/components/schemas/Project'
+                - type: object
+                  properties:
+                    markId:
+                      type: integer
+
       responses:
         201:
           description: Created
@@ -171,7 +176,7 @@ paths:
         204:
           description: 'deleted'
 
-  /v1/addMarker:
+  /v1/projects/addMarker:
     post:
       tags:
         - project
@@ -183,13 +188,17 @@ paths:
             schema:
               type: object
               properties:
-                projId:
+                projectId:
                   type: integer
                   description: 'projectId'
-                markerId:
-                  type: integer
-                  description: 'markerId'
+                markerIdList:
+                  type: array
+                  description: 'list of markerId'
+                  items:
+                    type: integer
+
       responses:
+
         201:
           description: 'added'
 
@@ -278,18 +287,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/GetCriteriaListReponse'
 
-  /v1/projects/setCriteria:
+  /v1/{id}/setCriteria:
     put:
       tags:
         - criteria
       operationId: addCriterianInto
       description:
         'add assess criterian to one peoject'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AddCriterianRequest'
+              type: array
+              items:
+                $ref: '#/components/schemas/Criteria'
       responses:
         201:
           description: Added
@@ -423,41 +440,53 @@ paths:
 
 
 
-  /results:
-    post:
+  /v1/result/{projectId}/{studentId}:
+    get:
       tags:
         - result
-      operationId: addResult
-      description: 'add result into the database'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AddResultRequest'
-      responses:
-        201:
-          description: Created
-  /results/final:
-    post:
-      tags:
-        - result
-      operationId: finalResult
-      description: 'add the final result into the database'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AddFinalResultRequest'
+      operationId: getIndividualResult
+      description: 'get individual result'
+      parameters:
+        - in: path
+          name: projectId
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: studentId
+          schema:
+            type: integer
+          required: true
+
       responses:
         200:
-          description: OK
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/result'
+                  criterian:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Criteria'
+                        - type: object
+                          properties:
+                            criteriaContent:
+                              type: string
 
-  /results/email:
+
+  /v1/result/email:
     post:
       tags:
         - result
       operationId: sendEmail
-      description: 'send a email to stuednt'
+      description: 'send a email to stuednts or markers'
       requestBody:
         content:
           application/json:
@@ -486,6 +515,25 @@ paths:
 components:
 
   schemas:
+
+    result:
+      type: object
+      properties:
+        marker:
+          allOf:
+            - $ref: '#/components/schemas/Marker'
+            - type: object
+              properties:
+                id:
+                  type: integer
+        criteria_id:
+          type: integer
+        point:
+          type: integer
+        comment:
+          type: string
+        date:
+          type: string
     LoginInformation:
       type: object
       properties:
@@ -520,9 +568,7 @@ components:
           type: string
         proj_name:
           type: string
-        duration_min:
-          type: integer
-        duration_sec:
+        duration:
           type: integer
         is_group:
           type: integer
@@ -586,15 +632,7 @@ components:
         weight:
           type: integer
 
-    AddCriterianRequest:
-      type: object
-      properties:
-        id:
-          type: integer
-        criterian:
-          type: array
-          items:
-            $ref: '#/components/schemas/Criteria'
+
 
     DeleteStudentRequest:
       type: object
@@ -668,15 +706,15 @@ components:
     SendEmailRequest:
       type: object
       properties:
-        token:
-          type: string
-        projectId:
-          type: string
-        studentId:
-          type: string
-        sendBoth:
+        project_id:
           type: integer
-          description: 'if 1, send only to the student; if 2, send both to the student and assessor'
+        studentIdList:
+          type: array
+          items:
+            type: integer
+        option:
+          type: integer
+          description: 'if 1, send only to the all markers of this project; if 2, send to the students; if 3, send to both markers and students '
 
     CreateProjectRequest:
       type: object

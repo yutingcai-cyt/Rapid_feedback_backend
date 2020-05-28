@@ -4,17 +4,13 @@ server:
 
 
 spring:
-  mail:
-    host: smtp.163.com
-    default-encoding: utf-8
-    username: 15221570989@163.com
-    password: 199522cyt
+
 
 
   datasource:
     url: jdbc:mysql://localhost:3306/rapid_feedback?serverTimezone=UTC
     username: root
-    password: spider0713
+    password: 123
     dbcp2:
       test-while-idle: true
       validalstion-query: SELECT 1

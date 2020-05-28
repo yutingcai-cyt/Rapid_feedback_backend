@@ -2,6 +2,7 @@ package rapidfeedback.backend.initial.functionality.student.Dao;
 
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
+import rapidfeedback.backend.initial.functionality.email.model.Assessment;
 import rapidfeedback.backend.initial.functionality.student.model.getStudentResponse;
 import rapidfeedback.backend.initial.model.Student;
 
@@ -33,6 +34,7 @@ public interface StudentDao {
             "VALUES(#{projectId}, #{studentId},0)")
     void addStudentIntoProject(@Param("studentId") Integer studentId, @Param("projectId") Integer projectId);
 
-
+    @Select("SELECT * FROM assessment where proj_id = #{projectId} and student_id = #{studentId}")
+    List<Assessment> getAssessment(@Param("studentId") Integer studentId, @Param("projectId") Integer projectId);
 
 }

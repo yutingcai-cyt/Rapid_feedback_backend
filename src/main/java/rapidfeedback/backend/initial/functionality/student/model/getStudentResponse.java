@@ -15,6 +15,7 @@ public class getStudentResponse {
     private String last_name;
     private String uni_email;
     private Integer group_id;
+    private Integer isAssessed;
 
 
 }

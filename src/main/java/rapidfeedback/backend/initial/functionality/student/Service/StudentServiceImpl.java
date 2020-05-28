@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class StudentServiceImpl implements  StudentService{
+public class StudentServiceImpl implements StudentService {
 
     @Autowired
     private StudentDao studentDao;
@@ -36,7 +36,7 @@ public class StudentServiceImpl implements  StudentService{
     @Override
     public CompletableFuture<List<AddStudentResponse>> batchAddStudents(List<Student> studentList, Integer projectId) {
         List<CompletableFuture<AddStudentResponse>> futureList = studentList.parallelStream()
-                .map(student -> addStudent(student,projectId))
+                .map(student -> addStudent(student, projectId))
                 .collect(Collectors.toList());
         return CompletableFutureTool.allOf(futureList);
     }
@@ -47,33 +47,41 @@ public class StudentServiceImpl implements  StudentService{
         CompletableFuture<Student> future = CompletableFuture
                 .supplyAsync(() -> studentDao.getStudentByStudentNumber(student.getUni_student_number()));
         return future.thenApplyAsync(student1 -> {
-           if(student1 == null){
-               log.info("the student dose not exist in student table!");
-               studentDao.addStudent(student);
-           }else{
-               log.info("this student already exist in student table");
-               student.setId(student1.getId());
-           }
-            log.info("studentInfo: {}",student);
-           studentDao.addStudentIntoProject(student.getId(),projectId);
-           AddStudentResponse response = JsonTransfer.transfer(student,new AddStudentResponse());
-           response.setProject_id(projectId);
-           response.setStudent_id(student.getId());
-           return response;
-        },executor);
+            if (student1 == null) {
+                log.info("the student dose not exist in student table!");
+                studentDao.addStudent(student);
+            } else {
+                log.info("this student already exist in student table");
+                student.setId(student1.getId());
+            }
+            log.info("studentInfo: {}", student);
+            studentDao.addStudentIntoProject(student.getId(), projectId);
+            AddStudentResponse response = JsonTransfer.transfer(student, new AddStudentResponse());
+            response.setProject_id(projectId);
+            response.setStudent_id(student.getId());
+            return response;
+        }, executor);
     }
-
-
 
 
     @Override
     public CompletableFuture<Void> deleteStudentFromProject(Integer studentId, Integer projectId) {
-        return CompletableFuture.runAsync(() -> studentDao.deleteStudent(studentId,projectId),executor);
+        return CompletableFuture.runAsync(() -> studentDao.deleteStudent(studentId, projectId), executor);
     }
 
     @Override
     public CompletableFuture<List<getStudentResponse>> getStudentdsInProject(Integer projectId) {
-        return CompletableFuture.supplyAsync(() -> studentDao.getStudentsByProjectId(projectId));
+        return CompletableFuture.supplyAsync(() -> studentDao.getStudentsByProjectId(projectId)
+                .stream()
+                .map(res -> {
+                    if (studentDao.getAssessment(res.getId(), projectId).size() > 0) {
+                        res.setIsAssessed(1);
+                    } else {
+                        res.setIsAssessed(0);
+                    }
+                    return res;
+                })
+                .collect(Collectors.toList()));
     }
 
 
