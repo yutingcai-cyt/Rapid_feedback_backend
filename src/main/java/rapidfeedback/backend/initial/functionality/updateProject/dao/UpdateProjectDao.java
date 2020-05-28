@@ -38,6 +38,9 @@ public interface UpdateProjectDao {
     @Insert("INSERT INTO proj_criteria(proj_id, criteria_id, weight) VALUES (#{project_id}, #{criteria_id}, #{weight})")
     void addCriteriaIntoProject(@Param("project_id") Integer projectId, @Param("criteria_id") Integer criteriaId, @Param("weight") Integer weight);
 
+    @Delete("DELETE FROM proj_criteria WHERE proj_id = #{projectId} AND criteria_id = #{criteriaId}")
+    void deleteCriteriaFromProject(@Param("projectId") Integer projectId, @Param("criteriaId") Integer criteriaId);
+
     @Update("UPDATE proj_criteria SET weight = #{weight} WHERE proj_id = #{projectId} AND criteria_id = #{criteriaId}")
     void updateCriteria(@Param("projectId") Integer projectId, @Param("criteriaId") Integer criteriaId, @Param("weight") Integer weight);
 

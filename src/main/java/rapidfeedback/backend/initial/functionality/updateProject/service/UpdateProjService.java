@@ -24,4 +24,6 @@ public interface UpdateProjService {
 
     CompletableFuture<AddCriteriaResponse> addCriteria(Integer projectId, CriteriaData criteria, Integer weight);
 
+    CompletableFuture<Void> deleteCriteriaFromProject(Integer projectId, Integer criteriaId);
+
 }

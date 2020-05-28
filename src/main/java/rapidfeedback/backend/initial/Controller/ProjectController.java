@@ -157,4 +157,14 @@ public class ProjectController {
                 },executor);
     }
 
+    @DeleteMapping("/{projectId}/{criteriaId}")
+    public CompletableFuture<ResponseEntity<Void>> deleteCriteriaFromProject(HttpServletRequest request, @PathVariable("projectId") Integer projectId, @PathVariable("criteriaId") Integer criteriaId){
+        String token = request.getHeader("Authorization");
+        Token.tokenCheck(request, token);
+        return updateProjectService.deleteCriteriaFromProject(projectId, criteriaId).thenApplyAsync(aVoid ->{
+            log.info("delete project {} criteria {}", projectId, criteriaId);
+            return ResponseEntity.ok(aVoid);
+        },executor);
+    }
+
 }
