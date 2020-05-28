@@ -98,5 +98,10 @@ public class UpdateProjectService implements UpdateProjService{
         },executor);
     }
 
+    @Override
+    public CompletableFuture<Void> deleteCriteriaFromProject(Integer projectId, Integer criteriaId) {
+        return CompletableFuture.runAsync(() -> updateProjectDao.deleteCriteriaFromProject(projectId, criteriaId),executor);
+    }
+
 
 }
