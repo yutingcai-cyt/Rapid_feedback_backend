@@ -18,8 +18,6 @@ public class CreateProjResponse {
     private Integer is_group;
     private String proj_description;
 
-
-
     public String toString(){
         return JSONObject.toJSONString(this);
     }

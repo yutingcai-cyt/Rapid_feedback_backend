@@ -3,16 +3,12 @@ package rapidfeedback.backend.initial.model;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.Tolerate;
-
 
 @Builder
 @Data
-public class Criteria {
+public class CriteriaContent {
 
     private Integer criteriaId;
+    private String criteriaContent;
     private Integer weight;
-
-    @Tolerate
-    public Criteria() {}
 }

@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
-import rapidfeedback.backend.initial.model.CreateProject;
 import rapidfeedback.backend.initial.model.Project;
 
 
