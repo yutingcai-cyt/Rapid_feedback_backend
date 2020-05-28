@@ -1,18 +1,15 @@
-package rapidfeedback.backend.initial.functionality.updateProject.model;
+package rapidfeedback.backend.initial.functionality.assess.model;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.Builder;
 import lombok.Data;
 
 
-import java.util.List;
-
-@Data
 @Builder
+@Data
+public class AddCommentResponse {
 
-public class GetMarkerResponse {
-
-    private List<Integer> markerIdList;
+    private Integer commentId;
 
     public String toString(){
         return JSONObject.toJSONString(this);

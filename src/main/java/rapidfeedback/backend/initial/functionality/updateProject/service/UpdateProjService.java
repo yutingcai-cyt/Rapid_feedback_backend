@@ -1,9 +1,11 @@
 package rapidfeedback.backend.initial.functionality.updateProject.service;
 
 import rapidfeedback.backend.initial.functionality.createProject.model.CreateProjResponse;
+import rapidfeedback.backend.initial.functionality.updateProject.model.AddCriteriaResponse;
 import rapidfeedback.backend.initial.functionality.updateProject.model.GetCriteriaResponse;
 import rapidfeedback.backend.initial.functionality.updateProject.model.GetMarkerResponse;
 import rapidfeedback.backend.initial.model.Criteria;
+import rapidfeedback.backend.initial.model.CriteriaData;
 import rapidfeedback.backend.initial.model.Project;
 
 import java.util.List;
@@ -19,5 +21,7 @@ public interface UpdateProjService {
     void updateCriteria(Integer projectId, List<Criteria> criteriaList);
 
     CompletableFuture<GetCriteriaResponse> getCriteria(Integer projectId);
+
+    CompletableFuture<AddCriteriaResponse> addCriteria(Integer projectId, CriteriaData criteria, Integer weight);
 
 }

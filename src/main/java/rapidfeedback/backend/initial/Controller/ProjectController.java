@@ -13,11 +13,10 @@ import rapidfeedback.backend.initial.functionality.deleteProject.service.DeleteP
 import rapidfeedback.backend.initial.functionality.loadProjectList.Dao.LoadProjectDao;
 import rapidfeedback.backend.initial.functionality.loadProjectList.model.LoadProjectRespond;
 import rapidfeedback.backend.initial.functionality.loadProjectList.Service.LoadProjectService;
-import rapidfeedback.backend.initial.functionality.updateProject.model.AddMarkerRequest;
-import rapidfeedback.backend.initial.functionality.updateProject.model.GetCriteriaResponse;
-import rapidfeedback.backend.initial.functionality.updateProject.model.GetMarkerResponse;
+import rapidfeedback.backend.initial.functionality.updateProject.model.*;
 import rapidfeedback.backend.initial.functionality.updateProject.service.UpdateProjectService;
 import rapidfeedback.backend.initial.model.Criteria;
+import rapidfeedback.backend.initial.model.CriteriaData;
 import rapidfeedback.backend.initial.model.Project;
 
 import javax.annotation.Resource;
@@ -90,6 +89,7 @@ public class ProjectController {
         Token.tokenCheck(request, token);
         return updateProjectService.updateProject(project, projectId)
                 .thenApplyAsync(createProjResponse -> {
+                    log.info("due_date: {}", project.getDue_date());
                     log.info("user {} update project", projectId);
                     return ResponseEntity.ok(createProjResponse);
                 }, executor);
@@ -142,6 +142,19 @@ public class ProjectController {
         String token = request.getHeader("Authorization");
         Token.tokenCheck(request, token);
         updateProjectService.updateCriteria(projectId, criteriaList);
+    }
+
+
+    @PostMapping("/addCriteria")
+    public CompletableFuture<ResponseEntity<AddCriteriaResponse>> addCriteria(HttpServletRequest request, @RequestBody AddCriteriaRequest addCriteriaRequest){
+        String token = request.getHeader("Authorization");
+        Token.tokenCheck(request, token);
+        CriteriaData criteria = JsonTransfer.transfer(addCriteriaRequest, new CriteriaData());
+        return updateProjectService.addCriteria(addCriteriaRequest.getProjectId(), criteria, addCriteriaRequest.getWeight())
+                .thenApplyAsync(addCriteriaResponse -> {
+                    log.info("project {}'s add criteria {}", addCriteriaRequest.getProjectId(), criteria.getContent());
+                    return ResponseEntity.ok(addCriteriaResponse);
+                },executor);
     }
 
 }
