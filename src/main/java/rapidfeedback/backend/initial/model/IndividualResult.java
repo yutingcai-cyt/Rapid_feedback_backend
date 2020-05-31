@@ -11,6 +11,7 @@ public class IndividualResult {
     private String firstName;
     private String lastName;
     private String assessedDate;
+    private Integer criteriaId;
     private String criteria;
     private Integer fullMark;
     private Double score;
