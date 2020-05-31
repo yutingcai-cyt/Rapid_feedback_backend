@@ -36,7 +36,8 @@ public class EmailService {
 
     @Autowired
     EmailDao emailDao;
-    private static final String PATH ="D:\\unimelb最后一学期\\softwareProject\\backend\\henfan\\Rapid_feedback_backend\\test.pdf";
+    //private static final String PATH ="D:\\unimelb最后一学期\\softwareProject\\backend\\henfan\\Rapid_feedback_backend\\test.pdf";
+    private static final String PATH ="/tmp/test.pdf";
 
     public CompletableFuture<Void> sendEmail(Integer projectId, List<Integer> studentIdList, Integer option){
         return CompletableFuture.runAsync(() ->{
@@ -78,6 +79,9 @@ public class EmailService {
             for(CriteriaInfo c: criteriaInfoList){
                 totalScore += c.getScore();
                 totalWeight += c.getWeight();
+            }
+            if(option < 1 || option > 3){
+                throw new FBException(CommonError.BAD_REQUEST.getResultCode(),"option can only be 1,2,3");
             }
             //only send to markers
             if(option == 1){
