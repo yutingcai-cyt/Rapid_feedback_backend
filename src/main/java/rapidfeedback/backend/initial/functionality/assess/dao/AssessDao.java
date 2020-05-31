@@ -25,7 +25,7 @@ public interface AssessDao {
     @Select("SELECT * from comment WHERE marker_id = #{markerId}")
     List<Comment> getCommentList(@Param(value = "markerId") Integer markerId);
 
-    @Select("SELECT m.id, m.first_name, m.last_name, a.assessed_date, c.name, p.weight, a.score, a.comment FROM ((assessment a JOIN marker m ON a.marker_id = m.id) JOIN criteria c ON a.criteria_id = c.id) JOIN proj_criteria p ON a.proj_id = p.proj_id AND c.id = p.criteria_id WHERE a.proj_id = #{projectId} AND a.student_id = #{studentId};")
+    @Select("SELECT m.id, m.first_name, m.last_name, a.assessed_date, c.id, c.name, p.weight, a.score, a.comment FROM ((assessment a JOIN marker m ON a.marker_id = m.id) JOIN criteria c ON a.criteria_id = c.id) JOIN proj_criteria p ON a.proj_id = p.proj_id AND c.id = p.criteria_id WHERE a.proj_id = #{projectId} AND a.student_id = #{studentId};")
     List<IndividualResult> getIndividualResult(@Param("projectId") Integer projectId, @Param("studentId") Integer studentId);
 
 }
