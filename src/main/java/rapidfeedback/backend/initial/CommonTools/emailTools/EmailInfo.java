@@ -13,7 +13,7 @@ public class EmailInfo {
                                              Double maxMark, Double score){
         return "Dear "+subjectCode+" "+subjectName+" student,<br> <br> <br>" +
 
-                "Attached is your mark breakdown and feedback for "+projectName+". The assignment was marked out of "+score +
+                "Attached is your mark breakdown and feedback for "+projectName+". The assignment was marked out of "+score+" "+
                 "and it makes up "+maxMark+" of your final subject mark. <br> <br> <br>" +
 
                 "Please contact us if you have any further questions about your mark or feedback.<br>" +
