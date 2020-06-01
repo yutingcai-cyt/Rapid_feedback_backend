@@ -18,8 +18,7 @@ public interface AssessDao {
                             @Param("groupId") Integer groupId, @Param("criteriaId") Integer criteriaId,
                   @Param("comment") String comment, @Param("score") Double score, @Param("assessedDate") String assessedDate);
 
-    @Update("UPDATE assessment SET proj_id = #{projectId}, marker_id = #{markerId}, student_id = #{studentId}, group_id = #{groupId}, " +
-            "criteria_id = #{criteriaId}, comment = #{comment}, score = #{score}, assessed_date = #{assessedDate};")
+    @Update("UPDATE assessment SET group_id = #{groupId}, comment = #{comment}, score = #{score}, assessed_date = #{assessedDate} WHERE proj_id = #{projectId} AND marker_id = #{markerId} AND student_id = #{studentId} AND criteria_id = #{criteriaId};")
     void updateIndividualScore(@Param("projectId") Integer projectId, @Param("markerId") Integer markerId, @Param("studentId") Integer studentId,
                             @Param("groupId") Integer groupId, @Param("criteriaId") Integer criteriaId,
                             @Param("comment") String comment, @Param("score") Double score, @Param("assessedDate") String assessedDate);
