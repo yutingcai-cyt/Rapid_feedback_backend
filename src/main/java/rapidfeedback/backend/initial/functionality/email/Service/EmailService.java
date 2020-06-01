@@ -1,8 +1,11 @@
 package rapidfeedback.backend.initial.functionality.email.Service;
 
+import com.alibaba.fastjson.support.odps.udf.CodecCheck;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import rapidfeedback.backend.initial.CommonTools.CompletableFuture.CompletableFutureTool;
 import rapidfeedback.backend.initial.CommonTools.Exception.CommonError;
 import rapidfeedback.backend.initial.CommonTools.Exception.FBException;
 import rapidfeedback.backend.initial.CommonTools.PDFTool.PDFTool;
@@ -10,11 +13,13 @@ import rapidfeedback.backend.initial.CommonTools.emailTools.EmailInfo;
 import rapidfeedback.backend.initial.CommonTools.emailTools.EmailTool;
 import rapidfeedback.backend.initial.functionality.email.Dao.EmailDao;
 import rapidfeedback.backend.initial.functionality.email.model.Assessment;
+import rapidfeedback.backend.initial.functionality.email.model.AudioRequest;
 import rapidfeedback.backend.initial.functionality.email.model.CriteriaInfo;
 import rapidfeedback.backend.initial.model.Marker;
 import rapidfeedback.backend.initial.model.Project;
 import rapidfeedback.backend.initial.model.Student;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -65,6 +70,12 @@ public class EmailService {
             log.info(criteriaInfoList+"");
             pdfTool.createPDF(PATH,project,studentList,coordinator,assessments,criteriaInfoList);
 
+
+            /**
+             * get audio
+             */
+            AudioRequest audioRequest = emailDao.getAudio(coordinator.getId(),projectId,studentList.get(0).getId());
+
             /**
              * send email, if option = 1, send only to the all markers of this project; if 2, send to the students
              * if 3, send to both markers and students
@@ -86,7 +97,7 @@ public class EmailService {
             //only send to markers
             if(option == 1){
                 emailTool.sendMimeMessage(markerEmails,project.getSubject_name(), EmailInfo.createEmailContent(project.getSubject_code()
-                        ,project.getSubject_name(),project.getProj_name(),totalWeight,totalScore),PATH);
+                        ,project.getSubject_name(),project.getProj_name(),totalWeight,totalScore),PATH,audioRequest);
             }
 
             List<String> studentEmails = studentList.stream()
@@ -95,7 +106,7 @@ public class EmailService {
             //only send to students
             if(option == 2){
                 emailTool.sendMimeMessage(studentEmails,project.getSubject_name(), EmailInfo.createEmailContent(project.getSubject_code()
-                        ,project.getSubject_name(),project.getProj_name(),totalWeight,totalScore),PATH);
+                        ,project.getSubject_name(),project.getProj_name(),totalWeight,totalScore),PATH,audioRequest);
             }
             log.info(markerEmails+"");
             log.info(studentEmails+"");
@@ -104,11 +115,39 @@ public class EmailService {
             log.info(markerEmails+"");
             if(option == 3){
                 emailTool.sendMimeMessage(markerEmails,project.getSubject_name(), EmailInfo.createEmailContent(project.getSubject_code()
-                        ,project.getSubject_name(),project.getProj_name(),totalWeight,totalScore),PATH);
+                        ,project.getSubject_name(),project.getProj_name(),totalWeight,totalScore),PATH,audioRequest);
             }
 
         });
 
+    }
+
+    public CompletableFuture<Void> addAudioForSingleStudent(Integer markerId,Integer studentId, Integer projectId, MultipartFile file, String type){
+        return CompletableFuture.runAsync(() ->{
+            try{
+                AudioRequest audioRequest = new AudioRequest();
+                byte[] test = file.getBytes();
+                log.info(test.length+"");
+                audioRequest.setBin_data(file.getBytes());
+                emailDao.addAudio(projectId,studentId,markerId,audioRequest.getBin_data(),type);
+            }catch (IOException e){
+                throw new FBException(CommonError.INTERNAL_SERVER_ERROR.getResultCode(),"file has something wrong");
+            }
+
+        });
+
+    }
+
+
+    public CompletableFuture<Void> addAudio(Integer projectId, List<Integer> studentIdList, MultipartFile file){
+        Marker coordinator = emailDao.getCoordinator(projectId);
+        String fileName = file.getOriginalFilename();
+        int pointIndex = fileName.lastIndexOf(".");
+        String type = fileName.substring(pointIndex+1);
+        List<CompletableFuture<Void>> futures = studentIdList.parallelStream()
+                .map(studentId -> addAudioForSingleStudent(coordinator.getId(),studentId,projectId,file,type))
+                .collect(Collectors.toList());
+        return CompletableFutureTool.allOf(futures).thenRunAsync(() ->{});
     }
 
 

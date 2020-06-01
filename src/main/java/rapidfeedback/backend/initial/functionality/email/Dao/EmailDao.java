@@ -1,15 +1,16 @@
 package rapidfeedback.backend.initial.functionality.email.Dao;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.type.BlobTypeHandler;
 import org.springframework.stereotype.Repository;
 import rapidfeedback.backend.initial.functionality.email.model.Assessment;
+import rapidfeedback.backend.initial.functionality.email.model.AudioRequest;
 import rapidfeedback.backend.initial.functionality.email.model.CriteriaInfo;
 import rapidfeedback.backend.initial.model.Marker;
 import rapidfeedback.backend.initial.model.Project;
 import rapidfeedback.backend.initial.model.Student;
 
+import java.sql.Blob;
 import java.util.List;
 
 /**
@@ -38,4 +39,10 @@ public interface EmailDao {
 
     @Select("SELECT * FROM marker_in_proj INNER JOIN marker ON marker_id = id WHERE proj_id = #{projectId}")
     List<Marker> getAllMarkersOfProject(@Param("projectId") Integer projectId);
+
+    @Insert("INSERT INTO audio(marker_id, proj_id, student_id, bin_data, file_type) VALUES(#{markerId},#{projectId}, #{studentId}, #{audio,jdbcType=BLOB,typeHandler = org.apache.ibatis.type.BlobTypeHandler}, #{type})")
+    Integer addAudio(@Param("projectId") Integer projectId,@Param("studentId") Integer studentId, @Param("markerId") Integer markerId,@Param("audio") Object audio, @Param("type") String file_type);
+
+    @Select("SELECT * FROM audio WHERE marker_id = #{markerId} AND proj_id = #{projectId} AND student_id = #{studentId}")
+    AudioRequest getAudio(@Param("markerId") Integer markerId, @Param("projectId") Integer projectId, @Param("studentId") Integer studentId);
 }
