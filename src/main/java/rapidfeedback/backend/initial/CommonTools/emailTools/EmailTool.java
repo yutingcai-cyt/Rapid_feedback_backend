@@ -47,6 +47,7 @@ public class EmailTool {
     private static final String AUDIO = "Audio.wav";
 
     private static final String AUDIOPATH ="/tmp/audio.wav";
+    //private static final String AUDIOPATH ="D:\\unimelb最后一学期\\softwareProject\\backend\\henfan\\Rapid_feedback_backend\\audio.wav";
     public void sendMimeMessage(List<String> to, String subject, String content, String filePath, AudioRequest audioRequest){
         MimeMessage message = mailSender.createMimeMessage();
         String[] toList = new String[to.size()];

@@ -45,4 +45,7 @@ public interface EmailDao {
 
     @Select("SELECT * FROM audio WHERE marker_id = #{markerId} AND proj_id = #{projectId} AND student_id = #{studentId}")
     AudioRequest getAudio(@Param("markerId") Integer markerId, @Param("projectId") Integer projectId, @Param("studentId") Integer studentId);
+
+    @Update("UPDATE audio set bin_data = #{audio} WHERE marker_id = #{markerId} AND proj_id = #{projectId} AND student_id = #{studentId}")
+    Boolean updateAudio(@Param("audio") Object audio, @Param("studentId") Integer studentId, @Param("markerId") Integer markerId, @Param("projectId") Integer projectId);
 }

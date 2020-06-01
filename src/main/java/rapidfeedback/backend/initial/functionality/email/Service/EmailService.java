@@ -129,7 +129,13 @@ public class EmailService {
                 byte[] test = file.getBytes();
                 log.info(test.length+"");
                 audioRequest.setBin_data(file.getBytes());
-                emailDao.addAudio(projectId,studentId,markerId,audioRequest.getBin_data(),type);
+                AudioRequest data = emailDao.getAudio(markerId,projectId,studentId);
+                if(data != null && data.getBin_data() != null){
+                    emailDao.updateAudio(audioRequest.getBin_data(),studentId,markerId,projectId);
+                }else{
+                    emailDao.addAudio(projectId,studentId,markerId,audioRequest.getBin_data(),type);
+                }
+
             }catch (IOException e){
                 throw new FBException(CommonError.INTERNAL_SERVER_ERROR.getResultCode(),"file has something wrong");
             }
