@@ -58,6 +58,17 @@ public class AssessService implements AssessServiceInterface {
     }
 
     @Override
+    public void updateAssess(List<Assess> assessList, Integer projectId, Integer markerId, Integer studentId, Integer groupId, String assessedDate) {
+        for (int i = 0; i < assessList.size(); i++) {
+
+            Integer criteriaId = assessList.get(i).getCriteriaId();
+            String comment = assessList.get(i).getComment();
+            Double score = assessList.get(i).getScore();
+            assessDao.updateIndividualScore(projectId, markerId, studentId, groupId, criteriaId, comment, score, assessedDate);
+        }
+    }
+
+    @Override
     public CompletableFuture<GetCommentResponse> getComment(Integer markerId) {
         CompletableFuture<List<Comment>> future = CompletableFuture.supplyAsync(() -> assessDao.getCommentList(markerId));
         return future.thenApplyAsync(comments -> {
