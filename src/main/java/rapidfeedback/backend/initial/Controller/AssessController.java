@@ -50,6 +50,16 @@ public class AssessController {
         log.info("assess student{}", assessRequest.getStudentId());
     }
 
+    @PutMapping("/updateAssess")
+    public void updateAssess(HttpServletRequest request, @RequestBody AssessRequest assessRequest){
+        String token = request.getHeader("Authorization");
+        Token.tokenCheck(request, token);
+        List<Assess> assessList = assessRequest.getAssessList();
+        assessService.updateAssess(assessList, assessRequest.getProjectId(), assessRequest.getMarkerId(), assessRequest.getStudentId(), assessRequest.getGroupId(), assessRequest.getAssessedDate());
+
+        log.info("update assess student{}", assessRequest.getStudentId());
+    }
+
     @PostMapping("/addComment")
     public CompletableFuture<ResponseEntity<AddCommentResponse>> addComment(HttpServletRequest request, @RequestBody AddCommentRequest addCommentRequest){
         String token = request.getHeader("Authorization");

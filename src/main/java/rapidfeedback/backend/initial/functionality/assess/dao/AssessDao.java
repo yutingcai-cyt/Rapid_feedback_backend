@@ -18,11 +18,16 @@ public interface AssessDao {
                             @Param("groupId") Integer groupId, @Param("criteriaId") Integer criteriaId,
                   @Param("comment") String comment, @Param("score") Double score, @Param("assessedDate") String assessedDate);
 
+    @Update("UPDATE assessment SET group_id = #{groupId}, comment = #{comment}, score = #{score}, assessed_date = #{assessedDate} WHERE proj_id = #{projectId} AND marker_id = #{markerId} AND student_id = #{studentId} AND criteria_id = #{criteriaId};")
+    void updateIndividualScore(@Param("projectId") Integer projectId, @Param("markerId") Integer markerId, @Param("studentId") Integer studentId,
+                            @Param("groupId") Integer groupId, @Param("criteriaId") Integer criteriaId,
+                            @Param("comment") String comment, @Param("score") Double score, @Param("assessedDate") String assessedDate);
+
     @Insert("INSERT INTO comment(marker_id, text, polarity) VALUES (#{comment.markerId}, #{comment.text}, #{comment.polarity});")
     @Options(useGeneratedKeys = true, keyProperty = "comment.id")
     Integer addComment(@Param("comment") Comment comment);
 
-    @Select("SELECT * from comment WHERE marker_id = #{markerId}")
+    @Select("SELECT * from comment WHERE marker_id = 0 OR marker_id = #{markerId}")
     List<Comment> getCommentList(@Param(value = "markerId") Integer markerId);
 
     @Select("SELECT m.id, m.first_name, m.last_name, a.assessed_date, a.criteria_id, c.name, p.weight, a.score, a.comment FROM ((assessment a JOIN marker m ON a.marker_id = m.id) JOIN criteria c ON a.criteria_id = c.id) JOIN proj_criteria p ON a.proj_id = p.proj_id AND c.id = p.criteria_id WHERE a.proj_id = #{projectId} AND a.student_id = #{studentId};")

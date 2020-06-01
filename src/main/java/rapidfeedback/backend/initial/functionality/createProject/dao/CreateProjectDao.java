@@ -24,8 +24,8 @@ public interface CreateProjectDao {
     void linkMarkerAndProj(@Param("markerId") Integer markerId, @Param("projectId") Integer projectId);
 
     @Insert("INSERT INTO proj_criteria(proj_id, criteria_id, weight) " +
-            "VALUES(#{projectId}, 1, 0), (#{projectId}, 2, 0), (#{projectId}, 3, 0), " +
-            "(#{projectId}, 4, 0), (#{projectId}, 5, 0), (#{projectId}, 6, 0), (#{projectId}, 7, 0)")
+            "VALUES(#{projectId}, 1, 10), (#{projectId}, 2, 10), (#{projectId}, 3, 10), " +
+            "(#{projectId}, 4, 10), (#{projectId}, 5, 10)")
     void linkProjAndCriteria(@Param("projectId") Integer projectId);
 
 
