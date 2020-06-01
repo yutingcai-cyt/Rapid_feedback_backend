@@ -16,5 +16,7 @@ public interface AssessServiceInterface {
 
     void assess(List<Assess> assessList, Integer projectId, Integer markerId, Integer studentId, Integer groupId, String assessedDate);
 
+    void updateAssess(List<Assess> assessList, Integer projectId, Integer markerId, Integer studentId, Integer groupId, String assessedDate);
+
     CompletableFuture<GetCommentResponse> getComment(Integer markerId);
 }
