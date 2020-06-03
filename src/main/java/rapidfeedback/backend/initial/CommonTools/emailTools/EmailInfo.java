@@ -11,14 +11,12 @@ import rapidfeedback.backend.initial.model.Project;
 public class EmailInfo {
     public static String  createEmailContent(String subjectCode, String subjectName, String projectName,
                                              Double maxMark, Double score){
-        return "Dear " + subjectCode + " " + subjectName + " student,<br> <br> <br>" +
+        return "Dear student,<br> <br> <br>" +
 
-                "Attached is your mark breakdown and feedback for " + projectName + ". The assignment was marked out of " + score + " " +
-                "and it makes up " + maxMark + " of your final subject mark. <br> <br> <br>" +
+                "your " + projectName + " has been graded. In summary, you received " + score + " / "
+                + maxMark + " marks for the presentation. Please find attached mark breakdown and feedback. <br> <br> <br>" +
 
-                "Please contact us if you have any further questions about your mark or feedback.<br>" +
-
-                "Best wishes,<br>" +
-                "The " + subjectCode + " " + subjectName + " team";
+                "Kind Regards,<br>" +
+                "The " + subjectCode + " team";
     }
 }
