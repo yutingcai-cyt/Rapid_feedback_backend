@@ -1,0 +1,815 @@
+
+
+openapi: 3.0.0
+info:
+  title: "rapid feedback"
+  description: "this is api for project of rapid feedback"
+  version: "1.0.0"
+
+tags:
+  - name: "student"
+  - name: "criteria"
+  - name: "project"
+  - name: "marker"
+  - name: "result"
+  - name: "group"
+
+paths:
+
+  /v1/markers/login:
+    post:
+      tags:
+        - marker
+      description: "the user login function"
+      operationId: "login"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInformation'
+      responses:
+        '200':
+          description: Login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+        '401':
+          description: failed
+          content:
+            applicaiton/json:
+              schema:
+                $ref: '#/components/schemas/ErrorInformation'
+
+
+  /v1/markers/register:
+    post:
+      tags:
+        - marker
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Marker'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+
+
+
+
+
+  /v1/projects:
+    post:
+      tags:
+        - project
+      operationId: createProject
+      description:
+        'add a new project'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Project'
+                - type: object
+                  properties:
+                    markId:
+                      type: integer
+
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Project'
+                  - type: object
+                    properties:
+                      id:
+                        type: integer
+
+
+  /v1/projects/{id}:
+    get:
+      tags:
+        - project
+      operationId: getProjectList
+      description:  "get all project acoording to the markerId"
+      parameters:
+        - in: path
+          name: id
+          description: "markerId which is used to search projects"
+          schema:
+            type: integer
+
+          required: true
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/Project'
+                    - type: object
+                      properties:
+                        id:
+                          type: integer
+
+
+
+
+
+
+
+    put:
+      tags:
+        - project
+
+      operationId: updateProject
+      description:
+        'update project information'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        content:
+          applcation/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Project'
+                - type: object
+                  properties:
+                    id:
+                      type: integer
+
+      responses:
+        200:
+          description: OK
+
+    delete:
+      tags:
+        - project
+      operationId: deleteProject
+      description: 'delete a project according to id'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        204:
+          description: 'deleted'
+
+  /v1/projects/addMarker:
+    post:
+      tags:
+        - project
+      operationId: addMarkerIntoAProject
+      description: 'add marker into a project'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                projectId:
+                  type: integer
+                  description: 'projectId'
+                markerIdList:
+                  type: array
+                  description: 'list of markerId'
+                  items:
+                    type: integer
+
+      responses:
+
+        201:
+          description: 'added'
+
+  /v1/projects/{id}/getMarker:
+    get:
+      tags:
+        - project
+      operationId: getAllMarkersOfAProject
+      description: 'get all markers of a project'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: 'ok'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  markerIdList:
+                    type: array
+                    items:
+                      type: integer
+                      description: 'markerId'
+
+
+
+
+
+  /v1/groups:
+    post:
+      tags:
+        - group
+      operationId: addGroup
+      description: "add students into a a group of a project"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupInfo'
+      responses:
+        201:
+          description: "OK"
+  /v1/groups/{projectId}/{groupId}:
+    delete:
+      tags:
+        - group
+      operationId: deleteGroup
+      description: "delete a group information from a project"
+      parameters:
+        - in: path
+          name: projectId
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: groupId
+          schema:
+            type: integer
+          required: true
+      responses:
+        204:
+          description: "deleted"
+
+  /v1/projects/{id}/getCriteria:
+    get:
+      tags:
+        - criteria
+      operationId: getAllCriteriaForAProject
+      description: "get all criterian of a specific project"
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: 'ok'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCriteriaListReponse'
+
+  /v1/projects/{id}/setCriteria:
+    put:
+      tags:
+        - criteria
+      operationId: addCriterianInto
+      description:
+        'add assess criterian to one peoject'
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Criteria'
+      responses:
+        201:
+          description: Added
+
+  /v1/projects/addCriteria:
+    post:
+      tags:
+        - criteria
+      operationId: addCriteria
+      description: "add a criteria into a project"
+      requestBody:
+        content:
+          applcation/json:
+            schema:
+              type: object
+              properties:
+                projectId:
+                  type: integer
+                content:
+                  type: string
+                weight:
+                  type: integer
+      responses:
+        201:
+          description: ok
+
+  /v1/projects/{projectId}/{criteriaId}:
+    delete:
+      tags:
+        - criteria
+      operationId: deleteCriteriaFromProject
+      description: "delete a criteria from a project"
+      parameters:
+        - in: path
+          name: projectId
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: criteriaId
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: deleted
+  /v1/students/template:
+    get:
+      tags:
+        - student
+      operationId: getExcelTemplate
+      description: 'get the template of excel file for batch import students'
+      responses:
+        200:
+          description: A excel file
+          content:
+            application/excel:
+              schema:
+                type: string
+                format: binary
+
+
+  /v1/students/batch:
+    post:
+      tags:
+        - student
+      operationId: batchImportStudent
+      description: 'batch import students into a project'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project_id:
+                  type: integer
+                studentList:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Student'
+      responses:
+        201:
+          description: 'added'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  studentList:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Student'
+                        - type: object
+                          properties:
+                            student_id:
+                              type: integer
+                              description: "id of the student"
+                            project_id:
+                              type: integer
+                              description: "id of the project"
+
+
+
+  /v1/students:
+    post:
+      tags:
+        - student
+      operationId: addStudentIntoProject
+      description: "add a student into project"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Student'
+                - type: object
+                  properties:
+                    project_id:
+                      type: integer
+      responses:
+        201:
+          description: "added"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Student'
+                  - type: object
+                    properties:
+                      student_id:
+                        type: integer
+                        description: "id of the student"
+                      project_id:
+                        type: integer
+                        description: "id of the project"
+
+
+  /v1/students/{projectId}:
+    get:
+      tags:
+        - student
+      operationId: getStudents
+      description: "get students belong to a single project"
+      parameters:
+        - in: path
+          name: projectId
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: "ok"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: "#/components/schemas/Student"
+                    - type: object
+                      properties:
+                        id:
+                          type: integer
+                        isAssessed:
+                          type: integer
+                          description: '0 -> not assessed; 1 -> assessed'
+
+
+  /v1/students/{studentId}/{projectId}:
+    delete:
+      tags:
+        - student
+      operationId: deleteStudentFromProject
+      description: "delete a student from a project"
+      parameters:
+        - in: path
+          name: studentId
+          schema:
+            type: integer
+          required: true
+        - in : path
+          name: projectId
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: "deleted"
+
+
+
+
+
+
+  /v1/result/{projectId}/{studentId}:
+    get:
+      tags:
+        - result
+      operationId: getIndividualResult
+      description: 'get individual result'
+      parameters:
+        - in: path
+          name: projectId
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: studentId
+          schema:
+            type: integer
+          required: true
+
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/result'
+
+
+
+
+  /v1/result/email:
+    post:
+      tags:
+        - result
+      operationId: sendEmail
+      description: 'send a email to stuednts or markers'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailRequest'
+      responses:
+        200:
+          description: OK
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+components:
+
+  schemas:
+
+    result:
+      type: object
+      properties:
+        markerId:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        criteria:
+          type: string
+        score:
+          type: number
+        fullMark:
+          type: integer
+        comment:
+          type: string
+        assessDate:
+          type: string
+    LoginInformation:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    LoginResponse:
+      type: object
+      properties:
+        is_coordinator:
+          type: integer
+          description: "0 -> false, 1 -> true"
+        last_name:
+          type: string
+        first_name:
+          type: string
+        token:
+          type: string
+        id:
+          type: integer
+          description: "id of the marker"
+
+    Project:
+      type: object
+      description: 'details we can get from the database table attributes'
+      properties:
+        subject_code:
+          type: string
+        subject_name:
+          type: string
+        proj_name:
+          type: string
+        duration:
+          type: integer
+        is_group:
+          type: integer
+          description: "0 -> individual project; 1 -> group project "
+        proj_description:
+          type: string
+
+    ErrorInformation:
+      type: string
+
+    Marker:
+      type: object
+      description: 'details we can get from the database table attributes'
+      properties:
+        uni_id:
+          type: integer
+        uni_email:
+          type: string
+        password:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        is_coordinator:
+          type: integer
+          description: "0 -> false, 1 -> true"
+
+    AddStudentRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        project:
+          type: string
+        students:
+          type: array
+          items:
+            $ref: '#/components/schemas/Student'
+
+    Student:
+      type: object
+      description: 'details we can get from the database table attributes'
+      properties:
+        uni_student_number:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        uni_email:
+          type: string
+
+
+    Criteria:
+      type: object
+      description: 'details we can get from the database table attributes'
+      properties:
+        criteriaId:
+          type: integer
+        weight:
+          type: integer
+
+
+
+    DeleteStudentRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        project:
+          type: string
+        student:
+          type: string
+
+    updateStudentRequest:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Student'
+        - type: object
+          properties:
+            token:
+              type: string
+            projectId:
+              type: string
+            groupId:
+              type: string
+
+
+    GroupStudentRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        projectId:
+          type: string
+        studentId:
+          type: string
+        groupId:
+          type: string
+    MarkerInProject:
+      type: object
+      properties:
+        token:
+          type: string
+        projectId:
+          type: string
+        markerId:
+          type: string
+
+    AddResultRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        projectId:
+          type: string
+        studentId:
+          type: string
+        remark:
+          type: object
+    AddFinalResultRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        projectId:
+          type: string
+        studentId:
+          type: string
+        remark:
+          type: object
+        score:
+          type: integer
+    SendEmailRequest:
+      type: object
+      properties:
+        project_id:
+          type: integer
+        studentIdList:
+          type: array
+          items:
+            type: integer
+        option:
+          type: integer
+          description: 'if 1, send only to the all markers of this project; if 2, send to the students; if 3, send to both markers and students '
+
+    CreateProjectRequest:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Project'
+        - type: object
+          properties:
+            token:
+              type: string
+    updateProjectRequest:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Project'
+        - type: object
+          properties:
+            token:
+              type: string
+    GroupInfo:
+      type: object
+      properties:
+        project_id:
+          type: integer
+        group_id:
+          type: integer
+        studentList:
+          type: array
+          items:
+            type: object
+            properties:
+              student_id:
+                type: integer
+    GetCriteriaListReponse:
+      type: object
+      properties:
+        criteriaList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Criteria'
+
+
+
+
+
