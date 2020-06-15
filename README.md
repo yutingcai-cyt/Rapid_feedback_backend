@@ -2,10 +2,10 @@
 
 ## How to run
 
-### git clone
+### 1.git clone
 
-### maven package(get the jar file)
+### 2.maven package(get the jar file)
 
-### cd docks(find the docker-compose file)
+### 3.cd docks(find the docker-compose file)
 
-### docker-compose up --build(build the image and run it)
+### 4.docker-compose up --build(build the image and run it)
