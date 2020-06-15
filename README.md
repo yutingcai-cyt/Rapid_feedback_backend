@@ -2,7 +2,9 @@
 
 ## How to run
 
-### maven package
+### git clone
+
+### maven package(get the jar file)
 
 ### cd docks(find the docker-compose file)
 
