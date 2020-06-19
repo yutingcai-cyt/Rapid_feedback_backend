@@ -14,6 +14,14 @@
 4.docker-compose up --build(build the image and run it)
 ```
 
+## run openapi server
+```
+1. npm i redoc-cli
+```
+2. cd openapi
+```
+3. redoc-cli serve -p 5000 openapi.yaml
+```
 ## Deployment
 We deployed backend server on AWS, the base URL is http://ec2-100-25-151-95.compute-1.amazonaws.com:8022/v1
 
